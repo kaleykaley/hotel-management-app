@@ -5,8 +5,117 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1000">
+
+    <!--button styling-->
+    <Window.Resources>
+        <Style TargetType="Button">
+
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Width" Value="190"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                        CornerRadius="10"
+                        Padding="5">
+
+                            <ContentPresenter
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+    </Window.Resources>
+
+    <!--creating 2 columns-->
     <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         
+        <!--left column: navigation bar-->
+        <Border Background="#4A6FA5"
+                Grid.Column="0">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- TITLE -->
+                <TextBlock 
+            Grid.Row="0"
+            Text="HOTEL MANAGEMENT"
+            Foreground="White"
+            FontSize="16"
+            FontWeight="Bold"
+            HorizontalAlignment="Center"
+            Margin="0,20,0,20"/>
+
+
+                <!-- BUTTONS -->
+                <StackPanel Grid.Row="1"
+            VerticalAlignment="Top"
+            Margin="0,0,0,0">
+
+                    <Button Content="Dashboard"/>
+                    <Button Content="Guests"/>
+                    <Button Content="Rooms"/>
+                    <Button Content="Reservations"/>
+                    <Button Content="Check-In"/>
+                    <Button Content="Check-Out"/>
+                    <Button Content="Invoices"/>
+
+                </StackPanel>
+
+
+                <!-- CREDITS -->
+                <StackPanel 
+            Grid.Row="2"
+            Margin="10"
+            HorizontalAlignment="Center">
+
+                    <Separator/>
+
+                    <TextBlock Text="Version 1.0"
+                       Foreground="White"
+                       FontSize="12"
+                       HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="Author Name"
+                       Foreground="White"
+                       FontSize="12"
+                       HorizontalAlignment="Center"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+        
+        <!--right column - dashboard content-->
+        <Frame x:Name="MainFrame"
+                Grid.Column="1"/>
+
+
     </Grid>
 </Window>
