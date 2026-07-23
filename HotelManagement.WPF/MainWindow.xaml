@@ -6,60 +6,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000">
+        Title="MainWindow" Height="800" Width="1500">
 
-    <!--button styling-->
+    <!--button styling moved to App.xaml-->
     <Window.Resources>
-
-        <Style TargetType="Button">
-
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-
-            <!-- No border normally -->
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="2"/>
-
-            <Setter Property="Width" Value="190"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="FontSize" Value="15"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="10">
-
-                            <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-
-
-            <Style.Triggers>
-
-                <Trigger Property="IsMouseOver" Value="True">
-
-                    <!-- Show border on hover -->
-                    <Setter Property="BorderBrush" Value="#8CCBFF"/>
-
-                </Trigger>
-
-
-            </Style.Triggers>
-
-        </Style>
 
     </Window.Resources>
 
-    <!--creating 2 columns-->
+    <!--creating 2 columns: Navigation Bar / Content-->
     <Grid>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
             <ColumnDefinition Width="*"/>
@@ -70,37 +25,59 @@
                 Grid.Column="0">
 
             <Grid>
-
+                <!--ROWS: Title / Buttons / Credits-->
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="90"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- TITLE -->
                 <TextBlock 
-            Grid.Row="0"
-            Text="HOTEL MANAGEMENT"
-            Foreground="White"
-            FontSize="16"
-            FontWeight="Bold"
-            HorizontalAlignment="Center"
-            Margin="0,20,0,20"/>
+                    Grid.Row="0"
+                    Text="HOTEL MANAGEMENT"
+                    Foreground="White"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,20"/>
+
+                <TextBlock 
+                    Grid.Row="0"
+                    Text="SYSTEM"
+                    Foreground="White"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    Margin="0,45,0,20"/>
 
 
                 <!-- BUTTONS -->
                 <StackPanel Grid.Row="1"
-            VerticalAlignment="Top"
-            Margin="0,0,0,0">
+                    VerticalAlignment="Top"
+                    Margin="0,0,0,0">
 
-                    <Button Content="Dashboard" Click="Dashboard_Click"/>
-                    <Button Content="Guests" Click="Guests_Click"/>
-                    <Button Content="Rooms" Click="Rooms_Click"/>
-                    <Button Content="Reservations" Click="Reservations_Click"/>
-                    <Button Content="Check-In" Click="CheckIn_Click"/>
-                    <Button Content="Check-Out" Click="CheckOut_Click"/>
-                    <Button Content="Invoices" Click="Invoices_Click"/>
-
+                    <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Dashboard"
+                        Click="Dashboard_Click"/>
+                    <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Guests"
+                        Click="Guests_Click"/>
+                    <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Rooms"
+                        Click="Rooms_Click"/>
+                    <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Reservations"
+                        Click="Reservations_Click"/>
+                    <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Check-In"
+                        Click="CheckIn_Click"/>
+                    <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Check-Out"
+                        Click="CheckOut_Click"/>
+                    <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Invoices"
+                        Click="Invoices_Click"/>
                 </StackPanel>
 
 

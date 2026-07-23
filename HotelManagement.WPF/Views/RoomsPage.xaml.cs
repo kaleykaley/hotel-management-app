@@ -1,17 +1,11 @@
-﻿using System;
+﻿using HotelManagement.WPF.Data.Entities;
+using HotelManagement.WPF.Windows;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http; // microsoft's client for communicating with web services
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HotelManagement.WPF.Views
 {
@@ -20,9 +14,145 @@ namespace HotelManagement.WPF.Views
     /// </summary>
     public partial class RoomsPage : Page
     {
+        // HttpClient: to send requests to our Web API
+        // create one object and reuse it while this page is open.
+        private HttpClient client = new HttpClient(); // bridge to API
+
+        // Stores all rooms received from API.
+        // Filter this list instead of requesting the API every time
+        private List<Room> allRooms = new List<Room>();
         public RoomsPage()
         {
             InitializeComponent();
+
+            // Base address of Web API
+            // Every request will start with this URL
+            client.BaseAddress = new Uri("https://localhost:44380/");
+
+            // Load rooms automatically; runs after page finishes loading
+            Loaded += RoomsPage_Loaded;
+        }
+
+        private async void RoomsPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            HttpResponseMessage response = await client.GetAsync("api/Rooms");
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Convert JSON returned by the API into a list of Room objects
+                var rooms = await response.Content.ReadAsAsync<List<Room>>();
+
+                // Save complete original list received from the API
+                allRooms = rooms;
+
+                // Display all rooms initially in the DataGrid
+                dgRooms.ItemsSource = allRooms;
+            }
+            else
+            {
+                MessageBox.Show("Error loading rooms.");
+            }
+        }
+
+        // implement filters through api?
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            // Reset ComboBoxes
+            cbRoomType.SelectedIndex = 0;
+            cbStatus.SelectedIndex = 0;
+
+            // Reset price fields
+            txtMinPrice.Text = "0";
+            txtMaxPrice.Text = "9999";
+
+            // Show all rooms again
+            dgRooms.ItemsSource = allRooms;
+        }
+
+        private async void AddRoom_Click(object sender, RoutedEventArgs e)
+        {
+            // Create a new RoomWindow to add new room info
+            RoomWindow window = new RoomWindow();
+
+            // Open the popup and wait until the user closes it
+            window.Show();
+
+            window.Closed += RoomWindow_Closed; // when this window closes, run the RoomWindow_Closed method to reload rooms
+        }
+
+        private async void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            // as Room: "Try to convert this to a Room. If it works, give me the Room.
+            // If not, give me null."
+            // Get the room selected by the user in the DataGrid
+            Room selectedRoom = dgRooms.SelectedItem as Room;
+
+            if (selectedRoom == null)
+            {
+                MessageBox.Show("Please select a room to edit.");
+                return;
+            }
+
+            // Create a new RoomWindow; pass the selected room to edit
+            RoomWindow window = new RoomWindow(selectedRoom);
+
+            // Open the popup and wait until the user closes it
+            window.Show();
+
+            window.Closed += RoomWindow_Closed; // when this window closes, run the RoomWindow_Closed method to reload rooms
+        }
+
+        // to refresh list of rooms after adding or editing a room
+        private void RoomWindow_Closed(object sender, EventArgs e)
+        {
+            RoomsPage_Loaded(null, null);
+        }
+
+        // async because it must wait for the server (API) to respond
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            // as Room: "Try to convert this to a Room. If it works, give me the Room.
+            // If not, give me null."
+            // Get the room selected
+            Room selectedRoom = dgRooms.SelectedItem as Room;
+
+            if (selectedRoom == null)
+            {
+                MessageBox.Show("Please select a room to delete.");
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show(
+                $"Are you sure you want to delete Room {selectedRoom.RoomNumber}?",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+            //DELETE api/Rooms/{id}
+            HttpResponseMessage response = await client.DeleteAsync($"api/Rooms/{selectedRoom.RoomId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                MessageBox.Show($"Room {selectedRoom.RoomNumber} deleted successfully.");
+
+                // Reload rooms from API
+                RoomsPage_Loaded(null, null);
+            }
+            else
+            {
+                string error = await response.Content.ReadAsStringAsync();
+
+                MessageBox.Show($"Delete failed:\n{error}");
+            }
         }
     }
 }

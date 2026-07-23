@@ -4,6 +4,133 @@
              xmlns:local="clr-namespace:HotelManagement.WPF"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+            
+            <!--navigation button styling-->
+        <Style x:Key="NavButtonStyle"
+            TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="2"/>
+
+            <Setter Property="Width" Value="190"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="FontSize" Value="15"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+
+                            <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                        </Border>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+
+            <Style.Triggers>
+
+                <Trigger Property="IsMouseOver" Value="True">
+
+                    <Setter Property="BorderBrush"
+                        Value="#8CCBFF"/>
+
+                </Trigger>
+
+            </Style.Triggers>
+
+
+        </Style>
+
+        <!-- Action button styling -->
+        <Style x:Key="ActionButtonStyle"
+       TargetType="Button">
+
+            <Setter Property="Background"
+            Value="#4A6FA5"/>
+
+            <Setter Property="Foreground"
+            Value="White"/>
+
+            <Setter Property="Width"
+            Value="120"/>
+
+            <Setter Property="Height"
+            Value="35"/>
+
+            <Setter Property="Margin"
+            Value="10"/>
+
+            <Setter Property="FontSize"
+            Value="14"/>
+
+            <Setter Property="FontWeight"
+            Value="SemiBold"/>
+
+            <Setter Property="BorderThickness"
+            Value="0"/>
+
+
+            <!-- Rounded corners -->
+            <Setter Property="Template">
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border Background="{TemplateBinding Background}"
+                        CornerRadius="8">
+
+                            <ContentPresenter
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+
+                        </Border>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+
+
+            <!-- Hover effect -->
+            <Style.Triggers>
+
+                <Trigger Property="IsMouseOver"
+                 Value="True">
+
+                    <Setter Property="Background"
+                    Value="#5D8AC7"/>
+
+                </Trigger>
+
+
+                <Trigger Property="IsPressed"
+                 Value="True">
+
+                    <Setter Property="Background"
+                    Value="#365A8A"/>
+
+                </Trigger>
+
+            </Style.Triggers>
+
+        </Style>
+
+
     </Application.Resources>
 </Application>

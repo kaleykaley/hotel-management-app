@@ -8,11 +8,274 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="RoomsPage">
 
-    <Grid>
-        <TextBlock Text="Rooms"
-           FontSize="40"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"/>
-        
+    <Grid Background="#F5F7FA"
+          Margin="25">
+        <!--define rows-->
+        <Grid.RowDefinitions>
+            <!--title-->
+            <RowDefinition Height="60"/>
+            <!--filters-->
+            <RowDefinition Height="Auto"/>
+            <!--dataGrid table-->
+            <RowDefinition Height="Auto"/>
+            <!--buttons-->
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+
+        <!-- TITLE - Row 0 -->
+        <TextBlock
+            Grid.Row="0"
+            Text="Rooms Management"
+            FontSize="24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Foreground="#2F5597"/>
+
+        <!--FILTERS - Row 1 -->
+        <Border Grid.Row="1"
+        Background="White"
+        CornerRadius="12"
+        Padding="20"
+        HorizontalAlignment="Center"
+        Margin="0,0,0,20">
+
+            <Grid>
+                <!--2 rows: FILTERS / SEARCH/CLEAR BUTTONS-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+
+                </Grid.ColumnDefinitions>
+                <!-- Column 0 -->
+                <TextBlock
+                    Text="Room Type:"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="#4A6FA5"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"/>
+
+                <!--Column 1: ComboBox for Room Type-->
+                <ComboBox x:Name="cbRoomType"
+                    Grid.Column="1"
+                    Height="30"
+                    Margin="5,0,5,5"
+                    SelectedIndex="0"
+                    VerticalContentAlignment="Center">
+
+
+                    <ComboBoxItem>
+                        All
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Standard
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Suite
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Luxury
+                    </ComboBoxItem>
+
+                </ComboBox>
+
+                <!--Column 2: Status Filter-->
+                <TextBlock
+                    Grid.Column="2"
+                    Text="Status:"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="#4A6FA5"
+                    Margin="40,0,10,0"
+                    VerticalAlignment="Center"/>
+
+                <!--ComboBox for status type-->
+                <ComboBox x:Name="cbStatus"
+                    Grid.Column="3"
+                      Height="30"
+                      Margin="5"
+                      SelectedIndex="0"
+                      VerticalContentAlignment="Center">
+
+
+                    <ComboBoxItem>
+                        All
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Available
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Occupied
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Maintenance
+                    </ComboBoxItem>
+
+                </ComboBox>
+
+                <!--Column 4-5: MIN PRICE-->
+                <TextBlock
+                    Grid.Column="4"
+                    Text="Min Price:"
+                    FontWeight="SemiBold"
+                    Foreground="#4A6FA5"
+                    Margin="20,0,5,0"
+                    VerticalAlignment="Center"/>
+
+                <TextBox
+                    x:Name="txtMinPrice"
+                    Grid.Column="5"
+                    Height="30"
+                    Margin="5"
+                    Text="0"
+                    VerticalContentAlignment="Center"/>
+
+                <!--Column 6-7: MAX PRICE-->
+                <TextBlock
+                    Grid.Column="6"
+                    Text="Max Price:"
+                    FontWeight="SemiBold"
+                    Foreground="#4A6FA5"
+                    Margin="20,0,5,0"
+                    VerticalAlignment="Center"/>
+
+                <TextBox
+                    x:Name="txtMaxPrice"
+                    Grid.Column="7"
+                    Height="30"
+                    Margin="5"
+                    Text="9999"
+                    VerticalContentAlignment="Center"/>
+
+                <!--Row 1: search/clear buttons-->
+                <!-- BUTTONS -->
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.ColumnSpan="8"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,15,0,0">
+
+                    <Button
+                        Content="Search"
+                        Width="120"
+                        Style="{StaticResource ActionButtonStyle}"
+                        Click="Search_Click"/>
+
+                    <Button
+                        Content="Clear Filters"
+                        Width="120"
+                        Margin="20,0,0,0"
+                        Style="{StaticResource ActionButtonStyle}"
+                        Click="Clear_Click"/>
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+        <!--Row 2: DataGrid to show all rooms-->
+        <DataGrid x:Name="dgRooms"
+            Grid.Row="2"
+            Margin="5,20,5,20"
+            AutoGenerateColumns="False"
+            Background="White"
+            BorderThickness="0"
+            FontSize="14"
+            RowHeight="40"
+            HeadersVisibility="Column">
+
+            <DataGrid.CellStyle>
+
+                <Style TargetType="DataGridCell">
+
+                    <Setter Property="HorizontalContentAlignment"
+                Value="Center"/>
+
+                    <Setter Property="VerticalContentAlignment"
+                Value="Center"/>
+
+                </Style>
+
+            </DataGrid.CellStyle>
+
+            <!--DataGrid columns-->
+            <DataGrid.Columns>
+
+                <DataGridTextColumn
+                    Header="Number"
+                    Binding="{Binding RoomNumber}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Type"
+                    Binding="{Binding RoomType}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Capacity"
+                    Binding="{Binding Capacity}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Price / Night"
+                    Binding="{Binding PricePerNight}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Status"
+                    Binding="{Binding RoomStatus}"
+                    Width="*"/>
+
+            </DataGrid.Columns>
+
+
+        </DataGrid>
+
+        <!--Row 3: Buttons-->
+        <StackPanel Grid.Row="3"
+            Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            Margin="0,10,0,0">
+
+            <Button Style="{StaticResource ActionButtonStyle}"
+                      Content="Add Room"
+                      Click="AddRoom_Click"/>
+
+            <Button Style="{StaticResource ActionButtonStyle}"
+                      Content="Edit"
+                      Click="Edit_Click"/>
+
+
+            <Button Style="{StaticResource ActionButtonStyle}"
+                      Content="Delete"
+                      Click="Delete_Click"/>
+
+        </StackPanel>
+
+
     </Grid>
 </Page>
