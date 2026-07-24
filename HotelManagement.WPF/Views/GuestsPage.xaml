@@ -8,11 +8,203 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="GuestsPage">
 
-    <Grid>
-        <TextBlock Text="Guests"
-           FontSize="40"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"/>
-        
+    <Grid Background="#F5F7FA"
+          Margin="25">
+        <!--define rows-->
+        <Grid.RowDefinitions>
+            <!--title-->
+            <RowDefinition Height="60"/>
+            <!--filters-->
+            <RowDefinition Height="Auto"/>
+            <!--dataGrid table-->
+            <RowDefinition Height="Auto"/>
+            <!--buttons-->
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+
+        <!-- TITLE - Row 0 -->
+        <TextBlock
+            Grid.Row="0"
+            Text="Guests Management"
+            FontSize="24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Foreground="#2F5597"/>
+
+        <!--FILTERS - Row 1 -->
+        <Border Grid.Row="1"
+        Background="White"
+        CornerRadius="12"
+        Padding="20"
+        HorizontalAlignment="Center"
+        Margin="0,0,0,20">
+
+            <Grid>
+                <!--2 rows: FILTERS / SEARCH/CLEAR BUTTONS-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+
+
+                </Grid.ColumnDefinitions>
+                <!-- Column 0 -->
+                <TextBlock
+                    Text="Filter guests:"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="#4A6FA5"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"/>
+
+                <!--Column 1: ComboBox for guest Type-->
+                <ComboBox x:Name="cbGuestType"
+                    Grid.Column="1"
+                    Height="30"
+                    Margin="5,0,5,5"
+                    SelectedIndex="0"
+                    VerticalContentAlignment="Center">
+
+
+                    <ComboBoxItem>
+                        All
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Guests with Active Reservation
+                    </ComboBoxItem>
+
+                    <ComboBoxItem>
+                        Guests with Stay History
+                    </ComboBoxItem>
+
+                </ComboBox>
+
+
+                <!--Row 1: search/clear buttons-->
+                <!-- BUTTONS -->
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.ColumnSpan="8"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,15,0,0">
+
+                    <Button
+                        Content="Search"
+                        Width="120"
+                        Style="{StaticResource ActionButtonStyle}"
+                        Click="Search_Click"/>
+
+                    <Button
+                        Content="Clear Filters"
+                        Width="120"
+                        Margin="20,0,0,0"
+                        Style="{StaticResource ActionButtonStyle}"
+                        Click="Clear_Click"/>
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+        <!--Row 2: DataGrid to show all guests-->
+        <DataGrid x:Name="dgGuests"
+            Grid.Row="2"
+            Margin="5,20,5,20"
+            AutoGenerateColumns="False"
+            Background="White"
+            BorderThickness="0"
+            FontSize="14"
+            RowHeight="40"
+            HeadersVisibility="Column">
+
+            <DataGrid.CellStyle>
+
+                <Style TargetType="DataGridCell">
+
+                    <Setter Property="HorizontalContentAlignment"
+                Value="Center"/>
+
+                    <Setter Property="VerticalContentAlignment"
+                Value="Center"/>
+
+                </Style>
+
+            </DataGrid.CellStyle>
+
+            <!--DataGrid columns-->
+            <DataGrid.Columns>
+
+                <DataGridTextColumn
+                    Header="Guest ID"
+                    Binding="{Binding GuestId}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Name"
+                    Binding="{Binding Name}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Phone Contact"
+                    Binding="{Binding PhoneContact}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Email"
+                    Binding="{Binding Email}"
+                    Width="*"/>
+
+
+                <DataGridTextColumn
+                    Header="Document Type"
+                    Binding="{Binding DocumentType}"
+                    Width="*"/>
+
+                <DataGridTextColumn
+                    Header="Document #"
+                    Binding="{Binding DocumentNumber}"
+                    Width="*"/>
+
+            </DataGrid.Columns>
+
+
+        </DataGrid>
+
+        <!--Row 3: Buttons-->
+        <StackPanel Grid.Row="3"
+            Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            Margin="0,10,0,0">
+
+            <Button Style="{StaticResource ActionButtonStyle}"
+                   Content="View Stay History"
+                   Click="StayHistory_Click"/>
+            
+            <Button Style="{StaticResource ActionButtonStyle}"
+                      Content="Add Guest"
+                      Click="AddGuest_Click"/>
+
+            <Button Style="{StaticResource ActionButtonStyle}"
+                      Content="Edit"
+                      Click="Edit_Click"/>
+
+
+            <Button Style="{StaticResource ActionButtonStyle}"
+                      Content="Delete"
+                      Click="Delete_Click"/>
+
+        </StackPanel>
+
     </Grid>
 </Page>

@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\Entities\Guest.cs" />
     <Compile Include="Data\Entities\Room.cs" />
     <Compile Include="Views\CheckInPage.xaml.cs">
       <DependentUpon>CheckInPage.xaml</DependentUpon>
