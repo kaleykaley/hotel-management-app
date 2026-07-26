@@ -61,9 +61,19 @@ namespace HotelManagement.WPF.Windows
             {
                 return;
             }
-            MessageBoxResult result = MessageBox.Show(
-                $"Are you sure you want to save changes to Room {room.RoomNumber}?",
-                "Confirm",
+
+            string message;
+
+            if (isEditMode)
+            {
+                message = $"Are you sure you want to save changes to Room {room.RoomNumber}?";
+            }
+            else
+            {
+                message = "Are you sure you want to add this room?";
+            }
+
+            MessageBoxResult result = MessageBox.Show(message,"Confirm",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 

@@ -87,9 +87,13 @@ namespace HotelManagement.API.Controllers
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
                     "There is no guest with this ID to edit."));
             }
-            // guest found, so update it
+
+            // Guest found, so update it
             existingGuest.Name = editedGuest.Name;
-            existingGuest.Email = editedGuest.Email; 
+            existingGuest.PhoneContact = editedGuest.PhoneContact;
+            existingGuest.Email = editedGuest.Email;
+            existingGuest.DocumentType = editedGuest.DocumentType;
+            existingGuest.DocumentNumber = editedGuest.DocumentNumber;
 
             try
             {

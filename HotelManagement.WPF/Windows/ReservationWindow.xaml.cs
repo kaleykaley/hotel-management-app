@@ -1,6 +1,8 @@
 ﻿using HotelManagement.WPF.Data.Entities;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace HotelManagement.WPF.Windows
@@ -14,6 +16,9 @@ namespace HotelManagement.WPF.Windows
         private bool isEditMode;
 
         private HttpClient client = new HttpClient(); // bridge to API
+
+        private List<Guest> guests = new List<Guest>();
+        private List<Room> rooms = new List<Room>();
 
 
         // If no Reservation is passed when creating the window, automatically use null
@@ -38,11 +43,13 @@ namespace HotelManagement.WPF.Windows
             else
             {
                 // ADD MODE
+
                 reservation = new Reservation();
                 isEditMode = false;
 
                 txtTitle.Text = "Add Reservation";
             }
+            Loaded += ReservationWindow_Loaded;
         }
 
 
@@ -68,9 +75,18 @@ namespace HotelManagement.WPF.Windows
                 return;
             }
 
-            MessageBoxResult result = MessageBox.Show(
-                $"Are you sure you want to save changes to Reservation {reservation.ReservationId}?",
-                "Confirm",
+            string message;
+
+            if (isEditMode)
+            {
+                message = $"Are you sure you want to save changes to Reservation {reservation.ReservationId}?";
+            }
+            else
+            {
+                message = "Are you sure you want to add this reservation?";
+            }
+
+            MessageBoxResult result = MessageBox.Show(message, "Confirm",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
@@ -177,5 +193,60 @@ namespace HotelManagement.WPF.Windows
 
             return true;
         }
+
+        private async void ReservationWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            await LoadGuests();
+            await LoadRooms();
+
+            if (isEditMode)
+            {
+                LoadReservationData();
+            }
+        }
+
+        private async Task LoadGuests()
+        {
+            HttpResponseMessage response = await client.GetAsync("api/Guests");
+
+            if (response.IsSuccessStatusCode)
+            {
+                guests = await response.Content.ReadAsAsync<List<Guest>>();
+
+                cbGuests.ItemsSource = guests;
+
+                // what the user sees
+                cbGuests.DisplayMemberPath = "Name";
+
+                // what gets stored
+                cbGuests.SelectedValuePath = "GuestId";
+            }
+            else
+            {
+                MessageBox.Show("Error loading guests.");
+            }
+        }
+
+        private async Task LoadRooms()
+        {
+            HttpResponseMessage response = await client.GetAsync("api/Rooms");
+
+            if (response.IsSuccessStatusCode)
+            {
+                rooms = await response.Content.ReadAsAsync<List<Room>>();
+
+                cbRooms.ItemsSource = rooms;
+
+                cbRooms.DisplayMemberPath = "RoomNumber";
+
+                cbRooms.SelectedValuePath = "RoomId";
+            }
+            else
+            {
+                MessageBox.Show("Error loading rooms.");
+            }
+        }
     }
+
+
 }

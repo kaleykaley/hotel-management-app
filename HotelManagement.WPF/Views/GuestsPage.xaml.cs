@@ -56,22 +56,82 @@ namespace HotelManagement.WPF.Views
 
         private void AddGuest_Click(object sender, RoutedEventArgs e)
         {
+            // Create a new RoomWindow to add new room info
+            GuestWindow window = new GuestWindow();
+
+            window.Show();
+
+            window.Closed += GuestWindow_Closed; // when this window closes, run GuestWindow_Closed method to reload guests
 
         }
 
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
+            // as Room: "Try to convert this to a Reservation. If it works, give me the Reservation.
+            // If not, give me null."
+            // Get the reservation selected by the user in the DataGrid
+            Guest selectedGuest = dgGuests.SelectedItem as Guest;
 
+            if (selectedGuest == null)
+            {
+                MessageBox.Show("Please select a guest to edit.");
+                return;
+            }
+            // Create a new GuestWindow; pass the selected guest to edit
+            GuestWindow window = new GuestWindow(selectedGuest);
+
+            window.Show();
+
+            window.Closed += GuestWindow_Closed; // when this window closes, run the GuestWindow_Closed method to reload guests
         }
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
+        // cannot delete a guest if they have reservations; check for that first
+        private async void Delete_Click(object sender, RoutedEventArgs e)
         {
+            Guest selectedGuest =
+                dgGuests.SelectedItem as Guest;
 
+            if (selectedGuest == null)
+            {
+                MessageBox.Show("Please select a guest to delete.");
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show(
+                $"Are you sure you want to delete guest {selectedGuest.Name}?",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.No)
+                return;
+
+            HttpResponseMessage response =
+                await client.DeleteAsync($"api/Guests/{selectedGuest.GuestId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Guest deleted successfully.");
+
+                GuestsPage_Loaded(null, null);
+            }
+            else
+            {
+                string error = await response.Content.ReadAsStringAsync();
+
+                MessageBox.Show(error);
+            }
         }
 
         private void StayHistory_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        // to refresh list of guests after adding or editing a guest
+        private void GuestWindow_Closed(object sender, EventArgs e)
+        {
+            GuestsPage_Loaded(null, null);
         }
     }
 }

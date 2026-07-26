@@ -18,11 +18,11 @@ namespace HotelManagement.WPF.Views
     {
         private HttpClient client = new HttpClient();
 
-        private List<HotelManagement.WPF.Data.Entities.Reservation> allReservations = new List<HotelManagement.WPF.Data.Entities.Reservation>();
+        private List<Reservation> allReservations = new List<Reservation>();
 
-        private List<HotelManagement.WPF.Data.Entities.Guest> allGuests = new List<HotelManagement.WPF.Data.Entities.Guest>();
+        private List<Guest> allGuests = new List<Guest>();
 
-        private List<HotelManagement.WPF.Data.Entities.Room> allRooms = new List<HotelManagement.WPF.Data.Entities.Room>();
+        private List<Room> allRooms = new List<Room>();
         public ReservationsPage()
         {
             InitializeComponent();
@@ -34,18 +34,17 @@ namespace HotelManagement.WPF.Views
 
         private async void ReservationsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            await LoadGuests();
-            await LoadRooms();
-
-            HttpResponseMessage response =
-                await client.GetAsync("api/Reservations");
-
+            HttpResponseMessage response = await client.GetAsync("api/Reservations");
 
             if (response.IsSuccessStatusCode)
             {
-                allReservations =
-                    await response.Content.ReadAsAsync<List<HotelManagement.WPF.Data.Entities.Reservation>>();
+                // Convert JSON returned by the API into a list of Reservation objects
+                var reservations = await response.Content.ReadAsAsync<List<Reservation>>();
 
+                // Save complete original list received from the API
+                allReservations = reservations;
+
+                // Display all reservations initially in the DataGrid
                 dgReservations.ItemsSource = allReservations;
             }
             else
@@ -93,14 +92,9 @@ namespace HotelManagement.WPF.Views
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             cbGuests.SelectedIndex = -1;
-
             cbRooms.SelectedIndex = -1;
-
             dpCheckIn.SelectedDate = null;
-
             dpCheckOut.SelectedDate = null;
-
-
             dgReservations.ItemsSource = allReservations;
         }
 
@@ -122,9 +116,9 @@ namespace HotelManagement.WPF.Views
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
         {
-            // as Room: "Try to convert this to a Room. If it works, give me the Room.
+            // as Reservation: "Try to convert this to a Reservation. If it works, give me the Reservation.
             // If not, give me null."
-            // Get the room selected by the user in the DataGrid
+            // Get the reservation selected by the user in the DataGrid
             Reservation selectedReservation = dgReservations.SelectedItem as Reservation;
 
             if (selectedReservation == null)
@@ -135,12 +129,16 @@ namespace HotelManagement.WPF.Views
             // Create a new ReservationWindow; pass the selected reservation to edit
             ReservationWindow window = new ReservationWindow(selectedReservation);
 
-            // Open the popup and wait until the user closes it
             window.Show();
 
             window.Closed += ReservationWindow_Closed; // when this window closes, run the ReservationWindow_Closed method to reload reservations
         }
 
+        /// <summary>
+        /// Cancel a reservation - only if it has not started yet (check-in date is in the future)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
 
@@ -165,17 +163,12 @@ namespace HotelManagement.WPF.Views
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
-
             if (result == MessageBoxResult.No)
                 return;
-
-
 
             HttpResponseMessage response =
                 await client.DeleteAsync(
                 $"api/Reservations/{selectedReservation.ReservationId}");
-
-
 
             if (response.IsSuccessStatusCode)
             {

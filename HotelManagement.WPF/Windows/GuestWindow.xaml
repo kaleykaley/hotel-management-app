@@ -1,11 +1,11 @@
-﻿<Window x:Class="HotelManagement.WPF.Windows.ReservationWindow"
+﻿<Window x:Class="HotelManagement.WPF.Windows.GuestWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF.Windows"
         mc:Ignorable="d"
-        Title="ReservationWindow" Height="500" Width="420"
+        Title="GuestWindow" Height="500" Width="420"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
@@ -26,7 +26,7 @@
         <!-- TITLE -->
         <TextBlock x:Name="txtTitle"
                    Grid.Row="0"
-                   Text="Reservation"
+                   Text="Guest"
                    FontSize="24"
                    FontWeight="SemiBold"
                    Foreground="#2F5597"
@@ -40,10 +40,9 @@
                 CornerRadius="12"
                 Padding="20">
 
-            <Grid>
+            <Grid Margin="0,0,0,41">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -67,115 +66,80 @@
                     FontWeight="SemiBold"
                     VerticalAlignment="Center"/>
 
-                <ComboBox
-                    x:Name="cbGuests"
+                <TextBox
+                    x:Name="txtGuestName"
                     Grid.Column="1"
                     Height="30"
-                    Margin="5"
-                    DisplayMemberPath="Name"
-                    SelectedValuePath="GuestId"/>
+                    Margin="5"/>
 
-                <!-- ROOM -->
+                <!-- PHONE CONTACT -->
                 <TextBlock
                     Grid.Row="1"
-                    Text="Room:"
-                    Foreground="#4A6FA5"
-                    FontWeight="SemiBold"
-                    VerticalAlignment="Center"/>
-
-                <ComboBox x:Name="cbRooms"
-                          Grid.Row="1"
-                          Grid.Column="1"
-                          Height="30"
-                          Margin="5"
-                          DisplayMemberPath="RoomNumber"
-                          SelectedValuePath="RoomId"
-                          VerticalContentAlignment="Center"/>
-
-
-
-                <!-- CHECK IN -->
-                <TextBlock
-                    Grid.Row="2"
-                    Text="Check In:"
-                    Foreground="#4A6FA5"
-                    FontWeight="SemiBold"
-                    VerticalAlignment="Center"/>
-
-                <DatePicker
-                    x:Name="dpCheckIn"
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Height="30"
-                    Margin="5"/>
-
-                <!-- CHECK OUT -->
-                <TextBlock
-                    Grid.Row="3"
-                    Text="Check Out:"
-                    Foreground="#4A6FA5"
-                    FontWeight="SemiBold"
-                    VerticalAlignment="Center"/>
-
-                <DatePicker
-                    x:Name="dpCheckOut"
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    Height="30"
-                    Margin="5"/>
-
-
-
-                <!-- NUMBER OF GUESTS -->
-                <TextBlock
-                    Grid.Row="4"
-                    Text="# of Guests:"
+                    Text="Phone Contact:"
                     Foreground="#4A6FA5"
                     FontWeight="SemiBold"
                     VerticalAlignment="Center"/>
 
                 <TextBox
-                    x:Name="txtNumberOfGuests"
-                    Grid.Row="4"
+                    Grid.Row="1"
+                    x:Name="txtPhoneContact"
                     Grid.Column="1"
                     Height="30"
                     Margin="5"/>
 
 
-                <!-- STATUS -->
+
+                <!-- Email -->
                 <TextBlock
-                    Grid.Row="5"
-                    Text="Status:"
+                    Grid.Row="2"
+                    Text="Email:"
                     Foreground="#4A6FA5"
                     FontWeight="SemiBold"
                     VerticalAlignment="Center"/>
 
+                <TextBox
+                  Grid.Row="2"
+                  x:Name="txtEmail"
+                  Grid.Column="1"
+                  Height="30"
+                  Margin="5"/>
 
-                <ComboBox x:Name="cbStatus"
-                          Grid.Row="5"
-                          Grid.Column="1"
-                          Height="30"
-                          Margin="5"
-                          VerticalContentAlignment="Center">
+                <!-- DOCUMENT TYPE -->
+                <TextBlock
+                    Grid.Row="3"
+                    Text="Document Type:"
+                    Foreground="#4A6FA5"
+                    FontWeight="SemiBold"
+                    VerticalAlignment="Center"/>
 
-                    <ComboBoxItem>
-                        Reserved
-                    </ComboBoxItem>
-
-                    <ComboBoxItem>
-                        Checked_In
-                    </ComboBoxItem>
-
-                    <ComboBoxItem>
-                        Checked_Out
-                    </ComboBoxItem>
-
-                    <ComboBoxItem>
-                        Cancelled
-                    </ComboBoxItem>
-
+                <ComboBox x:Name="cbDocumentType"
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Height="30"
+                    Margin="5">
+                    
+                    <ComboBoxItem>Passport</ComboBoxItem>
+                    <ComboBoxItem>Driver's License</ComboBoxItem>
+                    <ComboBoxItem>National ID</ComboBoxItem>
+                    
                 </ComboBox>
 
+
+
+                <!-- DOCUMENT NUMBER -->
+                <TextBlock
+                    Grid.Row="4"
+                    Text="Document Number:"
+                    Foreground="#4A6FA5"
+                    FontWeight="SemiBold"
+                    VerticalAlignment="Center"/>
+
+                <TextBox
+                    x:Name="txtDocumentNumber"
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Height="30"
+                    Margin="5"/>
 
             </Grid>
 
