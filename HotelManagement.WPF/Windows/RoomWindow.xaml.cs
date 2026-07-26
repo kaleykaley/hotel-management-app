@@ -57,8 +57,10 @@ namespace HotelManagement.WPF.Windows
 
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            GetRoomDataFromForm();
-
+            if (!GetRoomDataFromForm())
+            {
+                return;
+            }
             MessageBoxResult result = MessageBox.Show(
                 $"Are you sure you want to save changes to Room {room.RoomNumber}?",
                 "Confirm",
@@ -112,7 +114,7 @@ namespace HotelManagement.WPF.Windows
         }
 
         // helper to build room object from the form
-        private void GetRoomDataFromForm()
+        private bool GetRoomDataFromForm()
         {
             int roomNumber;
 
@@ -123,7 +125,7 @@ namespace HotelManagement.WPF.Windows
             else
             {
                 MessageBox.Show("Please enter a valid room number.");
-                return;
+                return false;
             }
             int capacity;
 
@@ -134,7 +136,7 @@ namespace HotelManagement.WPF.Windows
             else
             {
                 MessageBox.Show("Please enter a valid capacity.");
-                return;
+                return false;
             }
             room.RoomType = cbRoomType.Text;
             room.RoomStatus = cbStatus.Text;
@@ -148,10 +150,9 @@ namespace HotelManagement.WPF.Windows
             else
             {
                 MessageBox.Show("Please enter a valid price.");
-                return;
+                return false;
             }
+            return true;
         }
-
-
     }
 }

@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Database/">
+    <File Path="CreateDatabase.sql" />
+    <File Path="SeedData.sql" />
+  </Folder>
   <Project Path="HotelManagement.API/HotelManagement.API.csproj" Id="127f2453-e462-4905-939c-7291187fdae7" />
   <Project Path="HotelManagement.WPF/HotelManagement.WPF.csproj" Id="931bf788-b7a9-4f09-9488-a456ae9de943" />
 </Solution>

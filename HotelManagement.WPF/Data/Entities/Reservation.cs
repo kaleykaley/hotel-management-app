@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HotelManagement.WPF.Data.Entities
+{
+    public class Reservation
+    {
+        public int ReservationId { get; set; }
+
+        public int GuestId { get; set; }
+
+        public int RoomId { get; set; }
+
+        public DateTime CheckInDate { get; set; }
+
+        public DateTime CheckOutDate { get; set; }
+
+        public int NumberOfGuests { get; set; }
+
+        public string ReservationStatus { get; set; }
+
+        public int NumberOfNights =>
+            (CheckOutDate - CheckInDate).Days;
+    }
+}

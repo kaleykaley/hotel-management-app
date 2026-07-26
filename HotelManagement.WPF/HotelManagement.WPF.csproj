@@ -62,6 +62,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data\Entities\Guest.cs" />
+    <Compile Include="Data\Entities\Reservation.cs" />
     <Compile Include="Data\Entities\Room.cs" />
     <Compile Include="Views\CheckInPage.xaml.cs">
       <DependentUpon>CheckInPage.xaml</DependentUpon>
@@ -83,6 +84,9 @@
     </Compile>
     <Compile Include="Views\RoomsPage.xaml.cs">
       <DependentUpon>RoomsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ReservationWindow.xaml.cs">
+      <DependentUpon>ReservationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\RoomWindow.xaml.cs">
       <DependentUpon>RoomWindow.xaml</DependentUpon>
@@ -124,6 +128,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RoomsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ReservationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

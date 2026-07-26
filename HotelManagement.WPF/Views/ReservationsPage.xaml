@@ -6,13 +6,268 @@
       xmlns:local="clr-namespace:HotelManagement.WPF.Views"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ReservationsPage">
+      Title="GuestsPage">
 
-    <Grid>
-        <TextBlock Text="Reservations"
-          FontSize="40"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"/>
+    <Grid Background="#F5F7FA"
+          Margin="25">
+        <!--define rows-->
+        <Grid.RowDefinitions>
+            <!--title-->
+            <RowDefinition Height="60"/>
+            <!--filters-->
+            <RowDefinition Height="Auto"/>
+            <!--dataGrid table-->
+            <RowDefinition Height="Auto"/>
+            <!--buttons-->
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+
+        <!-- TITLE - Row 0 -->
+        <TextBlock
+            Grid.Row="0"
+            Text="Reservations Management"
+            FontSize="24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Foreground="#2F5597"/>
+
+        <!--FILTERS - Row 1 -->
+        <Border Grid.Row="1"
+        Background="White"
+        CornerRadius="12"
+        Padding="20"
+        HorizontalAlignment="Center"
+        Margin="0,0,0,20">
+
+        <!--2 rows: FILTERS / SEARCH/CLEAR BUTTONS-->
+        <Grid>
+
+            <!-- FILTERS + BUTTONS -->
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="180"/>
+
+                <ColumnDefinition Width="30"/>
+
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="180"/>
+
+            </Grid.ColumnDefinitions>
+
+
+
+            <!-- Guest -->
+
+            <TextBlock
+                Text="Guest:"
+                Grid.Row="0"
+                Grid.Column="0"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Foreground="#4A6FA5"
+                Margin="0,5,10,5"
+                VerticalAlignment="Center"/>
+
+
+            <ComboBox
+                x:Name="cbGuests"
+                Grid.Row="0"
+                Grid.Column="1"
+                Height="30"
+                Margin="5"
+                VerticalContentAlignment="Center"/>
+
+             <!-- Room -->
+
+             <TextBlock
+                Text="Room #:"
+                Grid.Row="1"
+                Grid.Column="0"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Foreground="#4A6FA5"
+                Margin="0,5,10,5"
+                VerticalAlignment="Center"/>
+
+             <ComboBox
+                x:Name="cbRooms"
+                Grid.Row="1"
+                Grid.Column="1"
+                Height="30"
+                Margin="5"
+                VerticalContentAlignment="Center"/>
+
+              <!-- Check In -->
+
+              <TextBlock
+                Text="Check In:"
+                Grid.Row="0"
+                Grid.Column="3"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Foreground="#4A6FA5"
+                Margin="0,5,10,5"
+                VerticalAlignment="Center"/>
+
+              <DatePicker
+                x:Name="dpCheckIn"
+                Grid.Row="0"
+                Grid.Column="4"
+                Height="30"
+                Margin="5"/>
+
+             <!-- Check Out -->
+
+             <TextBlock
+                Text="Check Out:"
+                Grid.Row="1"
+                Grid.Column="3"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Foreground="#4A6FA5"
+                Margin="0,5,10,5"
+                VerticalAlignment="Center"/>
+
+             <DatePicker
+                x:Name="dpCheckOut"
+                Grid.Row="1"
+                Grid.Column="4"
+                Height="30"
+                Margin="5"/>
+
+
+              <!--Row 1: search/clear buttons-->
+              <!-- BUTTONS -->
+                <StackPanel
+                    Grid.Row="2"
+                    Grid.ColumnSpan="8"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,15,0,0">
+
+                    <Button
+                        Content="Filter Reservations"
+                        Width="120"
+                        Style="{StaticResource ActionButtonStyle}"
+                        Click="Filter_Click"/>
+
+                    <Button
+                        Content="Clear Filters"
+                        Width="120"
+                        Margin="20,0,0,0"
+                        Style="{StaticResource ActionButtonStyle}"
+                        Click="Clear_Click"/>
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+        <!--Row 2: DataGrid to show all guests-->
+        <DataGrid x:Name="dgReservations"
+            Grid.Row="2"
+            Margin="5,20,5,20"
+            AutoGenerateColumns="False"
+            Background="White"
+            BorderThickness="0"
+            FontSize="14"
+            RowHeight="40"
+            HeadersVisibility="Column">
+
+            <DataGrid.CellStyle>
+
+                <Style TargetType="DataGridCell">
+
+                    <Setter Property="HorizontalContentAlignment"
+                Value="Center"/>
+
+                    <Setter Property="VerticalContentAlignment"
+                Value="Center"/>
+
+                </Style>
+
+            </DataGrid.CellStyle>
+
+            <!--DataGrid columns-->
+            <DataGrid.Columns>
+
+                <DataGridTextColumn
+                    Header="Reservation ID"
+                    Binding="{Binding ReservationId}"
+                    Width="*"/>
+
+                            <DataGridTextColumn
+                    Header="Guest Name"
+                    Binding="{Binding GuestName}"
+                    Width="*"/>
+
+                            <DataGridTextColumn
+                    Header="Room #"
+                    Binding="{Binding RoomNumber}"
+                    Width="80"/>
+
+                            <DataGridTextColumn
+                    Header="Check In"
+                    Binding="{Binding CheckInDate}"
+                    Width="*"/>
+
+                            <DataGridTextColumn
+                    Header="Check Out"
+                    Binding="{Binding CheckOutDate}"
+                    Width="*"/>
+
+                            <DataGridTextColumn
+                    Header="# of Guests"
+                    Binding="{Binding NumberOfGuests}"
+                    Width="*"/>
+
+                            <DataGridTextColumn
+                    Header="Status"
+                    Binding="{Binding ReservationStatus}"
+                    Width="*"/>
+
+            </DataGrid.Columns>
+
+
+        </DataGrid>
+
+        <!--Row 3: Buttons-->
+        <StackPanel Grid.Row="3"
+            Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            Margin="0,10,0,0">
+
+            <Button
+                Content="Add Reservation"
+                Style="{StaticResource ActionButtonStyle}"
+                Click="AddReservation_Click"/>
+
+             <Button
+                Content="Edit"
+                Style="{StaticResource ActionButtonStyle}"
+                Click="Edit_Click"/>
+
+             <Button
+                Content="Cancel"
+                Style="{StaticResource ActionButtonStyle}"
+                Click="Cancel_Click"/>
+
+              <Button
+                Content="Delete"
+                Style="{StaticResource ActionButtonStyle}"
+                Click="Delete_Click"/>
+
+            </StackPanel>
 
     </Grid>
 </Page>
