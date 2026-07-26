@@ -127,6 +127,73 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
+
+        // PUT CheckIn api/Reservations/5/CheckIn
+        [HttpPut]
+        [Route("api/Reservations/{id}/CheckIn")]
+        public IHttpActionResult CheckIn(int id)
+        {
+            Reservation reservation = dc.Reservations.FirstOrDefault(r => r.ReservationId == id);
+
+            if (reservation == null)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
+                    "There is no Reservation with this ID."));
+            }
+
+            if (reservation.ReservationStatus != "Reserved")
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest,
+                    "This reservation is not in a state that allows check-in."));
+            }
+
+            reservation.ReservationStatus = "Checked_In";
+
+            try
+            {
+                dc.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
+            }
+
+            return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
+        }
+
+        // PUT CheckOut api/Reservations/5/CheckOut
+        [HttpPut]
+        [Route("api/Reservations/{id}/CheckOut")]
+        public IHttpActionResult CheckOut(int id)
+        {
+            Reservation reservation = dc.Reservations.FirstOrDefault(r => r.ReservationId == id);
+
+            if (reservation == null)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
+                    "There is no Reservation with this ID."));
+            }
+
+            if (reservation.ReservationStatus != "Checked_In")
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest,
+                    "This reservation is not in a state that allows check-out."));
+            }
+
+            reservation.ReservationStatus = "Checked_Out";
+
+            try
+            {
+                dc.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
+            }
+
+            return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
+        }
+
         // DELETE api/Reservations/5
         // Added a route so this method is called when URL contains a ReservationId
         //[Route("api/Reservations/{ReservationId}")]

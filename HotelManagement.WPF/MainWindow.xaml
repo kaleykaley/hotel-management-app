@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1500">
+        Title="MainWindow" Height="600" Width="1200">
 
     <!--button styling moved to App.xaml-->
     <Window.Resources>
@@ -61,6 +61,9 @@
                         Content="Dashboard"
                         Click="Dashboard_Click"/>
                     <Button Style="{StaticResource NavButtonStyle}"
+                        Content="Front Desk"
+                        Click="FrontDesk_Click"/>
+                    <Button Style="{StaticResource NavButtonStyle}"
                         Content="Guests"
                         Click="Guests_Click"/>
                     <Button Style="{StaticResource NavButtonStyle}"
@@ -69,12 +72,6 @@
                     <Button Style="{StaticResource NavButtonStyle}"
                         Content="Reservations"
                         Click="Reservations_Click"/>
-                    <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Check-In"
-                        Click="CheckIn_Click"/>
-                    <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Check-Out"
-                        Click="CheckOut_Click"/>
                     <Button Style="{StaticResource NavButtonStyle}"
                         Content="Invoices"
                         Click="Invoices_Click"/>

@@ -48,15 +48,9 @@ namespace HotelManagement.WPF
         }
 
 
-
-        private void CheckIn_Click(object sender, RoutedEventArgs e)
+        private void FrontDesk_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new CheckInPage());
-        }
-
-        private void CheckOut_Click(object sender, RoutedEventArgs e)
-        {
-            MainFrame.Navigate(new CheckOutPage());
+            MainFrame.Navigate(new CheckInOutPage());
         }
 
         private void Invoices_Click(object sender, RoutedEventArgs e)

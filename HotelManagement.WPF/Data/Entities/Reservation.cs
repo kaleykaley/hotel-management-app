@@ -24,6 +24,7 @@ namespace HotelManagement.WPF.Data.Entities
 
         public int NumberOfGuests { get; set; }
 
+        // Reserved, Checked_In, Checked_Out, Cancelled
         public string ReservationStatus { get; set; }
 
         public int NumberOfNights =>
