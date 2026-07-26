@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF.Windows"
         mc:Ignorable="d"
-        Title="ReservationWindow" Height="500" Width="420"
+        Title="ReservationWindow" Height="450" Width="400"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
@@ -48,16 +48,13 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
 
                 </Grid.RowDefinitions>
-
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="130"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
 
 
                 <!-- GUEST -->
@@ -140,42 +137,6 @@
                     Grid.Column="1"
                     Height="30"
                     Margin="5"/>
-
-
-                <!-- STATUS -->
-                <TextBlock
-                    Grid.Row="5"
-                    Text="Status:"
-                    Foreground="#4A6FA5"
-                    FontWeight="SemiBold"
-                    VerticalAlignment="Center"/>
-
-
-                <ComboBox x:Name="cbStatus"
-                          Grid.Row="5"
-                          Grid.Column="1"
-                          Height="30"
-                          Margin="5"
-                          VerticalContentAlignment="Center">
-
-                    <ComboBoxItem>
-                        Reserved
-                    </ComboBoxItem>
-
-                    <ComboBoxItem>
-                        Checked_In
-                    </ComboBoxItem>
-
-                    <ComboBoxItem>
-                        Checked_Out
-                    </ComboBoxItem>
-
-                    <ComboBoxItem>
-                        Cancelled
-                    </ComboBoxItem>
-
-                </ComboBox>
-
 
             </Grid>
 

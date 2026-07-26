@@ -33,6 +33,9 @@ namespace HotelManagement.WPF.Windows
 
                 txtTitle.Text = "Edit Room";
 
+                txtRoomNumber.IsEnabled = false;
+
+
                 LoadRoomData();
             }
             else
@@ -141,6 +144,11 @@ namespace HotelManagement.WPF.Windows
 
             if (int.TryParse(txtCapacity.Text, out capacity))
             {
+                if (capacity > 10)
+                {
+                    MessageBox.Show("Room capacity cannot exceed 10 guests.");
+                    return false;
+                }
                 room.Capacity = capacity;
             }
             else
@@ -162,6 +170,7 @@ namespace HotelManagement.WPF.Windows
                 MessageBox.Show("Please enter a valid price.");
                 return false;
             }
+
             return true;
         }
     }

@@ -11,8 +11,12 @@ namespace HotelManagement.WPF.Data.Entities
         public int ReservationId { get; set; }
 
         public int GuestId { get; set; }
+        public string GuestName { get; set; }
+
 
         public int RoomId { get; set; }
+        public int RoomNumber { get; set; }
+
 
         public DateTime CheckInDate { get; set; }
 

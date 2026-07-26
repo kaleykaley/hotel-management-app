@@ -17,7 +17,7 @@
             <!--filters-->
             <RowDefinition Height="Auto"/>
             <!--dataGrid table-->
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <!--buttons-->
             <RowDefinition Height="Auto"/>
 

@@ -17,10 +17,31 @@ namespace HotelManagement.API.Controllers
 
         // GET api/Reservations
         // retrieve entire list of reservations
-        public List<Reservation> Get()
+        /*public List<Reservation> Get()
         {
             var listReservations = from Reservation in dc.Reservations select Reservation;
             return listReservations.ToList(); // convert back to list from object var
+        }*/
+
+        // TEMP CODE FOR TEST
+        public IHttpActionResult Get()
+        {
+            var listReservations = dc.Reservations.Select(r => new
+            {
+                r.ReservationId,
+                r.GuestId,
+                GuestName = r.Guest.Name,
+
+                r.RoomId,
+                RoomNumber = r.Room.RoomNumber,
+
+                r.CheckInDate,
+                r.CheckOutDate,
+                r.NumberOfGuests,
+                r.ReservationStatus
+            });
+
+            return Ok(listReservations.ToList());
         }
 
         // GET api/Reservations/5
@@ -49,14 +70,8 @@ namespace HotelManagement.API.Controllers
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
 
-            // NO SAME ID CHECK BECAUSE ID WILL BE ADDED AUTOMATICALLY
-            /*Reservation existingReservation = db.Reservations.FirstOrDefault(r => r.ReservationId == newReservation.ReservationId);
-
-            if (existingReservation != null) // Reservation already exists (w/ id), so cant add it
-            {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.Conflict,
-                    "There is already a registered Reservation with this ID."));
-            }*/
+            // New reservation defaults to "Reserved" status
+            newReservation.ReservationStatus = "Reserved";
 
             // reservation doesn't exist yet, so add it
             dc.Reservations.InsertOnSubmit(newReservation);
@@ -98,6 +113,7 @@ namespace HotelManagement.API.Controllers
             existingReservation.CheckInDate = editedReservation.CheckInDate;
             existingReservation.CheckOutDate = editedReservation.CheckOutDate;
             existingReservation.NumberOfGuests = editedReservation.NumberOfGuests;
+            existingReservation.ReservationStatus = editedReservation.ReservationStatus;
 
             try
             {
@@ -164,6 +180,23 @@ namespace HotelManagement.API.Controllers
             {
                 return "Checkout date must be after check-in date.";
             }
+
+            if (reservation.NumberOfGuests > room.Capacity)
+            {
+                return $"This room only allows a maximum of {room.Capacity} guests.";
+            }
+
+            /*bool conflict = dc.Reservations.Any(r =>
+                r.RoomId == reservation.RoomId &&
+                r.ReservationStatus != "Cancelled" &&
+                reservation.CheckInDate < r.CheckOutDate &&
+                reservation.CheckOutDate > r.CheckInDate
+            );
+
+            if (conflict)
+            {
+                return "Room already has a reservation during these dates.";
+            }*/
 
             return null; // everything is valid
         }

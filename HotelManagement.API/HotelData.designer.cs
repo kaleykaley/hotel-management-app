@@ -18,6 +18,7 @@ namespace HotelManagement.API
 	using System.Reflection;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Runtime.Serialization;
 	using System.ComponentModel;
 	using System;
 	
@@ -135,6 +136,7 @@ namespace HotelManagement.API
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Rooms")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class Room : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -153,6 +155,8 @@ namespace HotelManagement.API
 		private string _RoomStatus;
 		
 		private EntitySet<Reservation> _Reservations;
+		
+		private bool serializing;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -174,11 +178,11 @@ namespace HotelManagement.API
 		
 		public Room()
 		{
-			this._Reservations = new EntitySet<Reservation>(new Action<Reservation>(this.attach_Reservations), new Action<Reservation>(this.detach_Reservations));
-			OnCreated();
+			this.Initialize();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
 		public int RoomId
 		{
 			get
@@ -199,6 +203,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomNumber", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
 		public int RoomNumber
 		{
 			get
@@ -219,6 +224,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomType", DbType="NVarChar(30) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
 		public string RoomType
 		{
 			get
@@ -239,6 +245,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Capacity", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4)]
 		public int Capacity
 		{
 			get
@@ -259,6 +266,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PricePerNight", DbType="Decimal(10,2) NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=5)]
 		public decimal PricePerNight
 		{
 			get
@@ -279,6 +287,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomStatus", DbType="NVarChar(30) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=6)]
 		public string RoomStatus
 		{
 			get
@@ -299,10 +308,16 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Room_Reservation", Storage="_Reservations", ThisKey="RoomId", OtherKey="RoomId")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=7, EmitDefaultValue=false)]
 		public EntitySet<Reservation> Reservations
 		{
 			get
 			{
+				if ((this.serializing 
+							&& (this._Reservations.HasLoadedOrAssignedValues == false)))
+				{
+					return null;
+				}
 				return this._Reservations;
 			}
 			set
@@ -342,9 +357,37 @@ namespace HotelManagement.API
 			this.SendPropertyChanging();
 			entity.Room = null;
 		}
+		
+		private void Initialize()
+		{
+			this._Reservations = new EntitySet<Reservation>(new Action<Reservation>(this.attach_Reservations), new Action<Reservation>(this.detach_Reservations));
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerializing(StreamingContext context)
+		{
+			this.serializing = true;
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializedAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerialized(StreamingContext context)
+		{
+			this.serializing = false;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ExtraServices")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class ExtraService : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -357,6 +400,8 @@ namespace HotelManagement.API
 		private decimal _Price;
 		
 		private EntitySet<ReservationExtraService> _ReservationExtraServices;
+		
+		private bool serializing;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -372,11 +417,11 @@ namespace HotelManagement.API
 		
 		public ExtraService()
 		{
-			this._ReservationExtraServices = new EntitySet<ReservationExtraService>(new Action<ReservationExtraService>(this.attach_ReservationExtraServices), new Action<ReservationExtraService>(this.detach_ReservationExtraServices));
-			OnCreated();
+			this.Initialize();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExtraServiceId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
 		public int ExtraServiceId
 		{
 			get
@@ -397,6 +442,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
 		public string Name
 		{
 			get
@@ -417,6 +463,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Decimal(10,2) NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
 		public decimal Price
 		{
 			get
@@ -437,10 +484,16 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ExtraService_ReservationExtraService", Storage="_ReservationExtraServices", ThisKey="ExtraServiceId", OtherKey="ExtraServiceId")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4, EmitDefaultValue=false)]
 		public EntitySet<ReservationExtraService> ReservationExtraServices
 		{
 			get
 			{
+				if ((this.serializing 
+							&& (this._ReservationExtraServices.HasLoadedOrAssignedValues == false)))
+				{
+					return null;
+				}
 				return this._ReservationExtraServices;
 			}
 			set
@@ -480,9 +533,37 @@ namespace HotelManagement.API
 			this.SendPropertyChanging();
 			entity.ExtraService = null;
 		}
+		
+		private void Initialize()
+		{
+			this._ReservationExtraServices = new EntitySet<ReservationExtraService>(new Action<ReservationExtraService>(this.attach_ReservationExtraServices), new Action<ReservationExtraService>(this.detach_ReservationExtraServices));
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerializing(StreamingContext context)
+		{
+			this.serializing = true;
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializedAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerialized(StreamingContext context)
+		{
+			this.serializing = false;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Guests")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class Guest : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -501,6 +582,8 @@ namespace HotelManagement.API
 		private string _DocumentNumber;
 		
 		private EntitySet<Reservation> _Reservations;
+		
+		private bool serializing;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -522,11 +605,11 @@ namespace HotelManagement.API
 		
 		public Guest()
 		{
-			this._Reservations = new EntitySet<Reservation>(new Action<Reservation>(this.attach_Reservations), new Action<Reservation>(this.detach_Reservations));
-			OnCreated();
+			this.Initialize();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GuestId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
 		public int GuestId
 		{
 			get
@@ -547,6 +630,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
 		public string Name
 		{
 			get
@@ -567,6 +651,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneContact", DbType="NVarChar(30)")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
 		public string PhoneContact
 		{
 			get
@@ -587,6 +672,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="NVarChar(100)")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4)]
 		public string Email
 		{
 			get
@@ -607,6 +693,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocumentType", DbType="NVarChar(50)")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=5)]
 		public string DocumentType
 		{
 			get
@@ -627,6 +714,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocumentNumber", DbType="NVarChar(50)")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=6)]
 		public string DocumentNumber
 		{
 			get
@@ -647,10 +735,16 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Guest_Reservation", Storage="_Reservations", ThisKey="GuestId", OtherKey="GuestId")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=7, EmitDefaultValue=false)]
 		public EntitySet<Reservation> Reservations
 		{
 			get
 			{
+				if ((this.serializing 
+							&& (this._Reservations.HasLoadedOrAssignedValues == false)))
+				{
+					return null;
+				}
 				return this._Reservations;
 			}
 			set
@@ -690,9 +784,37 @@ namespace HotelManagement.API
 			this.SendPropertyChanging();
 			entity.Guest = null;
 		}
+		
+		private void Initialize()
+		{
+			this._Reservations = new EntitySet<Reservation>(new Action<Reservation>(this.attach_Reservations), new Action<Reservation>(this.detach_Reservations));
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerializing(StreamingContext context)
+		{
+			this.serializing = true;
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializedAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerialized(StreamingContext context)
+		{
+			this.serializing = false;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Invoices")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class Invoice : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -710,6 +832,8 @@ namespace HotelManagement.API
 		
 		private EntityRef<Reservation> _Reservation;
 		
+		private bool serializing;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -726,12 +850,11 @@ namespace HotelManagement.API
 		
 		public Invoice()
 		{
-			this._Payments = new EntitySet<Payment>(new Action<Payment>(this.attach_Payments), new Action<Payment>(this.detach_Payments));
-			this._Reservation = default(EntityRef<Reservation>);
-			OnCreated();
+			this.Initialize();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
 		public int InvoiceId
 		{
 			get
@@ -752,6 +875,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReservationId", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
 		public int ReservationId
 		{
 			get
@@ -776,6 +900,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IssueDate", DbType="Date NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
 		public System.DateTime IssueDate
 		{
 			get
@@ -796,6 +921,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceStatus", DbType="NVarChar(30) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4)]
 		public string InvoiceStatus
 		{
 			get
@@ -816,10 +942,16 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Invoice_Payment", Storage="_Payments", ThisKey="InvoiceId", OtherKey="InvoiceId")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=5, EmitDefaultValue=false)]
 		public EntitySet<Payment> Payments
 		{
 			get
 			{
+				if ((this.serializing 
+							&& (this._Payments.HasLoadedOrAssignedValues == false)))
+				{
+					return null;
+				}
 				return this._Payments;
 			}
 			set
@@ -893,9 +1025,38 @@ namespace HotelManagement.API
 			this.SendPropertyChanging();
 			entity.Invoice = null;
 		}
+		
+		private void Initialize()
+		{
+			this._Payments = new EntitySet<Payment>(new Action<Payment>(this.attach_Payments), new Action<Payment>(this.detach_Payments));
+			this._Reservation = default(EntityRef<Reservation>);
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerializing(StreamingContext context)
+		{
+			this.serializing = true;
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializedAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerialized(StreamingContext context)
+		{
+			this.serializing = false;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Payments")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class Payment : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -931,11 +1092,11 @@ namespace HotelManagement.API
 		
 		public Payment()
 		{
-			this._Invoice = default(EntityRef<Invoice>);
-			OnCreated();
+			this.Initialize();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PaymentId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
 		public int PaymentId
 		{
 			get
@@ -956,6 +1117,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PaymentType", DbType="NVarChar(30) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
 		public string PaymentType
 		{
 			get
@@ -976,6 +1138,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AmountPaid", DbType="Decimal(10,2) NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
 		public decimal AmountPaid
 		{
 			get
@@ -996,6 +1159,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PaymentDate", DbType="Date NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4)]
 		public System.DateTime PaymentDate
 		{
 			get
@@ -1016,6 +1180,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceId", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=5)]
 		public int InvoiceId
 		{
 			get
@@ -1092,9 +1257,23 @@ namespace HotelManagement.API
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void Initialize()
+		{
+			this._Invoice = default(EntityRef<Invoice>);
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ReservationExtraServices")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class ReservationExtraService : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -1124,12 +1303,11 @@ namespace HotelManagement.API
 		
 		public ReservationExtraService()
 		{
-			this._ExtraService = default(EntityRef<ExtraService>);
-			this._Reservation = default(EntityRef<Reservation>);
-			OnCreated();
+			this.Initialize();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReservationId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
 		public int ReservationId
 		{
 			get
@@ -1154,6 +1332,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExtraServiceId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
 		public int ExtraServiceId
 		{
 			get
@@ -1178,6 +1357,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
 		public int Quantity
 		{
 			get
@@ -1284,9 +1464,24 @@ namespace HotelManagement.API
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void Initialize()
+		{
+			this._ExtraService = default(EntityRef<ExtraService>);
+			this._Reservation = default(EntityRef<Reservation>);
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Reservations")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class Reservation : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -1314,6 +1509,8 @@ namespace HotelManagement.API
 		
 		private EntityRef<Room> _Room;
 		
+		private bool serializing;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1336,14 +1533,11 @@ namespace HotelManagement.API
 		
 		public Reservation()
 		{
-			this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
-			this._ReservationExtraServices = new EntitySet<ReservationExtraService>(new Action<ReservationExtraService>(this.attach_ReservationExtraServices), new Action<ReservationExtraService>(this.detach_ReservationExtraServices));
-			this._Guest = default(EntityRef<Guest>);
-			this._Room = default(EntityRef<Room>);
-			OnCreated();
+			this.Initialize();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReservationId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
 		public int ReservationId
 		{
 			get
@@ -1364,6 +1558,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GuestId", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
 		public int GuestId
 		{
 			get
@@ -1388,6 +1583,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomId", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
 		public int RoomId
 		{
 			get
@@ -1412,6 +1608,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CheckInDate", DbType="Date NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4)]
 		public System.DateTime CheckInDate
 		{
 			get
@@ -1432,6 +1629,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CheckOutDate", DbType="Date NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=5)]
 		public System.DateTime CheckOutDate
 		{
 			get
@@ -1452,6 +1650,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NumberOfGuests", DbType="Int NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=6)]
 		public int NumberOfGuests
 		{
 			get
@@ -1472,6 +1671,7 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReservationStatus", DbType="NVarChar(30) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=7)]
 		public string ReservationStatus
 		{
 			get
@@ -1492,10 +1692,16 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Reservation_Invoice", Storage="_Invoices", ThisKey="ReservationId", OtherKey="ReservationId")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=8, EmitDefaultValue=false)]
 		public EntitySet<Invoice> Invoices
 		{
 			get
 			{
+				if ((this.serializing 
+							&& (this._Invoices.HasLoadedOrAssignedValues == false)))
+				{
+					return null;
+				}
 				return this._Invoices;
 			}
 			set
@@ -1505,10 +1711,16 @@ namespace HotelManagement.API
 		}
 		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Reservation_ReservationExtraService", Storage="_ReservationExtraServices", ThisKey="ReservationId", OtherKey="ReservationId")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=9, EmitDefaultValue=false)]
 		public EntitySet<ReservationExtraService> ReservationExtraServices
 		{
 			get
 			{
+				if ((this.serializing 
+							&& (this._ReservationExtraServices.HasLoadedOrAssignedValues == false)))
+				{
+					return null;
+				}
 				return this._ReservationExtraServices;
 			}
 			set
@@ -1627,6 +1839,36 @@ namespace HotelManagement.API
 		{
 			this.SendPropertyChanging();
 			entity.Reservation = null;
+		}
+		
+		private void Initialize()
+		{
+			this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
+			this._ReservationExtraServices = new EntitySet<ReservationExtraService>(new Action<ReservationExtraService>(this.attach_ReservationExtraServices), new Action<ReservationExtraService>(this.detach_ReservationExtraServices));
+			this._Guest = default(EntityRef<Guest>);
+			this._Room = default(EntityRef<Room>);
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerializing(StreamingContext context)
+		{
+			this.serializing = true;
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializedAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerialized(StreamingContext context)
+		{
+			this.serializing = false;
 		}
 	}
 }

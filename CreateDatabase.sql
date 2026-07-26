@@ -10,11 +10,11 @@ GO
 CREATE TABLE Guests(
 	GuestId INT PRIMARY KEY IDENTITY(1,1),
 	Name NVARCHAR(100) NOT NULL,
-	PhoneContact NVARCHAR(30),
-	Email NVARCHAR(100),
+	PhoneContact NVARCHAR(30) NOT NULL,
+	Email NVARCHAR(100) NOT NULL,
 	-- Passport, Driver's License, National ID
-	DocumentType NVARCHAR(50),
-	DocumentNumber NVARCHAR(50)
+	DocumentType NVARCHAR(50) NOT NULL,
+	DocumentNumber NVARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Rooms(

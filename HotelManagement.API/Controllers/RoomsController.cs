@@ -159,14 +159,39 @@ namespace HotelManagement.API.Controllers
                 return "Room number must be greater than 0.";
             }
 
+            if (room.RoomNumber > 9999)
+            {
+                return "Room number is too large.";
+            }
+
             if (room.Capacity <= 0)
             {
                 return "Capacity must be greater than 0.";
             }
 
+            if (room.Capacity > 10)
+            {
+                return "Room capacity cannot be greater than 10 guests.";
+            }
+
             if (room.PricePerNight <= 0)
             {
                 return "Price per night must be greater than 0.";
+            }
+
+            if (room.PricePerNight > 1000)
+            {
+                return "Price per night must be less than 1000.";
+            }
+
+            // check for already existing room number
+            bool duplicateRoomNumber = dc.Rooms.Any(r =>
+                 r.RoomNumber == room.RoomNumber &&
+                 r.RoomId != room.RoomId); // ignores itself when editing
+
+            if (duplicateRoomNumber)
+            {
+                return "A room with this number already exists.";
             }
 
             return null;

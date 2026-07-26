@@ -64,8 +64,6 @@ namespace HotelManagement.WPF.Windows
             dpCheckOut.SelectedDate = reservation.CheckOutDate;
 
             txtNumberOfGuests.Text = reservation.NumberOfGuests.ToString();
-
-            cbStatus.Text = reservation.ReservationStatus;
         }
 
         private async void Save_Click(object sender, RoutedEventArgs e)
@@ -119,7 +117,7 @@ namespace HotelManagement.WPF.Windows
 
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show($"Reservation {reservation.ReservationId} added successfully."); ;
+                    MessageBox.Show($"New reservation added successfully."); ;
                 }
                 else
                 {
@@ -188,8 +186,6 @@ namespace HotelManagement.WPF.Windows
                 MessageBox.Show("Please enter a valid number of guests.");
                 return false;
             }
-
-            reservation.ReservationStatus = cbStatus.Text;
 
             return true;
         }
