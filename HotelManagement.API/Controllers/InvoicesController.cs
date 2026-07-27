@@ -15,24 +15,82 @@ namespace HotelManagement.API.Controllers
                 ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
         // GET api/Invoices
-        public IHttpActionResult Get()
+        /*public IHttpActionResult Get()
         {
             return Ok(dc.Invoices.ToList());
+        }*/
+        public IHttpActionResult Get()
+        {
+            var invoices = dc.Invoices
+                .Select(i => new InvoiceViewModel
+                {
+                    InvoiceId = i.InvoiceId,
+                    ReservationId = i.ReservationId,
+                    IssueDate = i.IssueDate,
+                    InvoiceStatus = i.InvoiceStatus,
+
+                    GuestName = i.Reservation.Guest.Name,
+
+                    RoomNumber = i.Reservation.Room.RoomNumber,
+
+                    RoomCharge =
+                        (i.Reservation.CheckOutDate - i.Reservation.CheckInDate).Days
+                        * i.Reservation.Room.PricePerNight,
+
+                    TotalDue = CalculateInvoiceTotal(i)
+                })
+                .ToList();
+
+            return Ok(invoices);
         }
+
+
 
         // GET api/Invoices/5
-        public IHttpActionResult Get(int id)
-        {
-            Invoice Invoice = dc.Invoices.FirstOrDefault(p => p.InvoiceId == id);
+        /* public IHttpActionResult Get(int id)
+         {
+             Invoice invoice = dc.Invoices.FirstOrDefault(p => p.InvoiceId == id);
 
-            if (Invoice != null)
-            {
-                // response says the Invoice was found and here it is
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, Invoice));
-            }
-            // Invoice not found, sends 404 default
-            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found."));
-        }
+             if (invoice != null)
+             {
+                 // response says the Invoice was found and here it is
+                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, Invoice));
+             }
+             // Invoice not found, sends 404 default
+             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found."));
+         }*/
+        // GET api/Invoices/5
+         public IHttpActionResult Get(int id)
+         {
+            InvoiceViewModel invoice = dc.Invoices
+                .Where(i => i.InvoiceId == id)
+                .Select(i => new InvoiceViewModel
+                {
+                    InvoiceId = i.InvoiceId,
+                    ReservationId = i.ReservationId,
+                    IssueDate = i.IssueDate,
+                    InvoiceStatus = i.InvoiceStatus,
+
+                    GuestName = i.Reservation.Guest.Name,
+
+                    RoomNumber = i.Reservation.Room.RoomNumber,
+
+                    RoomCharge =
+                        (i.Reservation.CheckOutDate - i.Reservation.CheckInDate).Days
+                        * i.Reservation.Room.PricePerNight,
+
+                    TotalDue = CalculateInvoiceTotal(i)
+                })
+                .FirstOrDefault();
+            if (invoice != null)
+             {
+                 // response says the Invoice was found and here it is
+                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, invoice));
+             }
+             // Invoice not found, sends 404 default
+             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found."));
+         }
+
 
         // POST api/Invoices
         // Insert a Invoice, returns ihttp result
@@ -134,7 +192,7 @@ namespace HotelManagement.API.Controllers
             {
                 int nights = (reservation.CheckOutDate - reservation.CheckInDate).Days;
 
-                total += nights * reservation.Room.PricePerNight;
+                total += nights * dc.Rooms.First(r => r.RoomId == reservation.RoomId).PricePerNight;
             }
 
             var extras = dc.ReservationExtraServices

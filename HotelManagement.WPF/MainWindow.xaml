@@ -73,7 +73,7 @@
                         Content="Reservations"
                         Click="Reservations_Click"/>
                     <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Invoices"
+                        Content="Billing"
                         Click="Invoices_Click"/>
                 </StackPanel>
 

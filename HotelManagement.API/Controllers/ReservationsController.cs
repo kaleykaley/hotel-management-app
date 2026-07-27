@@ -26,36 +26,63 @@ namespace HotelManagement.API.Controllers
         // TEMP CODE FOR TEST
         public IHttpActionResult Get()
         {
-            var listReservations = dc.Reservations.Select(r => new
-            {
-                r.ReservationId,
-                r.GuestId,
-                GuestName = r.Guest.Name,
+            var listReservations = dc.Reservations
+                .Select(r => new ReservationViewModel
+                {
+                    ReservationId = r.ReservationId,
 
-                r.RoomId,
-                RoomNumber = r.Room.RoomNumber,
+                    GuestName = r.Guest.Name,
 
-                r.CheckInDate,
-                r.CheckOutDate,
-                r.NumberOfGuests,
-                r.ReservationStatus
-            });
+                    RoomNumber = r.Room.RoomNumber,
 
-            return Ok(listReservations.ToList());
+                    PricePerNight = r.Room.PricePerNight,
+
+                    CheckInDate = r.CheckInDate,
+
+                    CheckOutDate = r.CheckOutDate,
+
+                    NumberOfGuests = r.NumberOfGuests,
+
+                    ReservationStatus = r.ReservationStatus
+                })
+                .ToList();
+
+            return Ok(listReservations);
         }
 
         // GET api/Reservations/5
         public IHttpActionResult Get(int id)
         {
-            Reservation reservation = dc.Reservations.FirstOrDefault(r => r.ReservationId == id);
+            ReservationViewModel reservation = dc.Reservations
+                .Where(r => r.ReservationId == id)
+                .Select(r => new ReservationViewModel
+                {
+                    ReservationId = r.ReservationId,
+
+                    GuestName = r.Guest.Name,
+
+                    RoomNumber = r.Room.RoomNumber,
+
+                    PricePerNight = r.Room.PricePerNight,
+
+                    CheckInDate = r.CheckInDate,
+
+                    CheckOutDate = r.CheckOutDate,
+
+                    NumberOfGuests = r.NumberOfGuests,
+
+                    ReservationStatus = r.ReservationStatus
+                })
+                .FirstOrDefault();
 
             if (reservation != null)
             {
-                // response says the Reservation was found and here it is
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, reservation));
+                return ResponseMessage(
+                    Request.CreateResponse(HttpStatusCode.OK, reservation));
             }
-            // Reservation not found, sends 404 default
-            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Reservation not found."));
+
+            return ResponseMessage(
+                Request.CreateResponse(HttpStatusCode.NotFound, "Reservation not found."));
         }
 
 

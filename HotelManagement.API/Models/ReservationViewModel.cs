@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace HotelManagement.WPF.Data.Entities
+namespace HotelManagement.API
 {
-    public class Reservation
+    public class ReservationViewModel
     {
         public int ReservationId { get; set; }
 
-        public int GuestId { get; set; }
         public string GuestName { get; set; }
 
-
-        public int RoomId { get; set; }
         public int RoomNumber { get; set; }
 
-        public decimal PricePerNight { get; set; } // display property, not stored in the database
-
+        public decimal PricePerNight { get; set; }
 
         public DateTime CheckInDate { get; set; }
 
@@ -26,7 +21,6 @@ namespace HotelManagement.WPF.Data.Entities
 
         public int NumberOfGuests { get; set; }
 
-        // Reserved, Checked_In, Checked_Out, Cancelled
         public string ReservationStatus { get; set; }
 
         public int NumberOfNights =>
