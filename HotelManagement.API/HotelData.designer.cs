@@ -23,7 +23,7 @@ namespace HotelManagement.API
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="HotelManagement")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="HotelManagement2026")]
 	public partial class HotelDataDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -34,12 +34,12 @@ namespace HotelManagement.API
     partial void InsertRoom(Room instance);
     partial void UpdateRoom(Room instance);
     partial void DeleteRoom(Room instance);
-    partial void InsertExtraService(ExtraService instance);
-    partial void UpdateExtraService(ExtraService instance);
-    partial void DeleteExtraService(ExtraService instance);
     partial void InsertGuest(Guest instance);
     partial void UpdateGuest(Guest instance);
     partial void DeleteGuest(Guest instance);
+    partial void InsertExtraService(ExtraService instance);
+    partial void UpdateExtraService(ExtraService instance);
+    partial void DeleteExtraService(ExtraService instance);
     partial void InsertInvoice(Invoice instance);
     partial void UpdateInvoice(Invoice instance);
     partial void DeleteInvoice(Invoice instance);
@@ -86,19 +86,19 @@ namespace HotelManagement.API
 			}
 		}
 		
-		public System.Data.Linq.Table<ExtraService> ExtraServices
-		{
-			get
-			{
-				return this.GetTable<ExtraService>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Guest> Guests
 		{
 			get
 			{
 				return this.GetTable<Guest>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ExtraService> ExtraServices
+		{
+			get
+			{
+				return this.GetTable<ExtraService>();
 			}
 		}
 		
@@ -386,182 +386,6 @@ namespace HotelManagement.API
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ExtraServices")]
-	[global::System.Runtime.Serialization.DataContractAttribute()]
-	public partial class ExtraService : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _ExtraServiceId;
-		
-		private string _Name;
-		
-		private decimal _Price;
-		
-		private EntitySet<ReservationExtraService> _ReservationExtraServices;
-		
-		private bool serializing;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnExtraServiceIdChanging(int value);
-    partial void OnExtraServiceIdChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnPriceChanging(decimal value);
-    partial void OnPriceChanged();
-    #endregion
-		
-		public ExtraService()
-		{
-			this.Initialize();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExtraServiceId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
-		public int ExtraServiceId
-		{
-			get
-			{
-				return this._ExtraServiceId;
-			}
-			set
-			{
-				if ((this._ExtraServiceId != value))
-				{
-					this.OnExtraServiceIdChanging(value);
-					this.SendPropertyChanging();
-					this._ExtraServiceId = value;
-					this.SendPropertyChanged("ExtraServiceId");
-					this.OnExtraServiceIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
-			set
-			{
-				if ((this._Name != value))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Decimal(10,2) NOT NULL")]
-		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
-		public decimal Price
-		{
-			get
-			{
-				return this._Price;
-			}
-			set
-			{
-				if ((this._Price != value))
-				{
-					this.OnPriceChanging(value);
-					this.SendPropertyChanging();
-					this._Price = value;
-					this.SendPropertyChanged("Price");
-					this.OnPriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ExtraService_ReservationExtraService", Storage="_ReservationExtraServices", ThisKey="ExtraServiceId", OtherKey="ExtraServiceId")]
-		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4, EmitDefaultValue=false)]
-		public EntitySet<ReservationExtraService> ReservationExtraServices
-		{
-			get
-			{
-				if ((this.serializing 
-							&& (this._ReservationExtraServices.HasLoadedOrAssignedValues == false)))
-				{
-					return null;
-				}
-				return this._ReservationExtraServices;
-			}
-			set
-			{
-				this._ReservationExtraServices.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_ReservationExtraServices(ReservationExtraService entity)
-		{
-			this.SendPropertyChanging();
-			entity.ExtraService = this;
-		}
-		
-		private void detach_ReservationExtraServices(ReservationExtraService entity)
-		{
-			this.SendPropertyChanging();
-			entity.ExtraService = null;
-		}
-		
-		private void Initialize()
-		{
-			this._ReservationExtraServices = new EntitySet<ReservationExtraService>(new Action<ReservationExtraService>(this.attach_ReservationExtraServices), new Action<ReservationExtraService>(this.detach_ReservationExtraServices));
-			OnCreated();
-		}
-		
-		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
-		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
-		public void OnDeserializing(StreamingContext context)
-		{
-			this.Initialize();
-		}
-		
-		[global::System.Runtime.Serialization.OnSerializingAttribute()]
-		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
-		public void OnSerializing(StreamingContext context)
-		{
-			this.serializing = true;
-		}
-		
-		[global::System.Runtime.Serialization.OnSerializedAttribute()]
-		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
-		public void OnSerialized(StreamingContext context)
-		{
-			this.serializing = false;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Guests")]
 	[global::System.Runtime.Serialization.DataContractAttribute()]
 	public partial class Guest : INotifyPropertyChanging, INotifyPropertyChanged
@@ -788,6 +612,182 @@ namespace HotelManagement.API
 		private void Initialize()
 		{
 			this._Reservations = new EntitySet<Reservation>(new Action<Reservation>(this.attach_Reservations), new Action<Reservation>(this.detach_Reservations));
+			OnCreated();
+		}
+		
+		[global::System.Runtime.Serialization.OnDeserializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnDeserializing(StreamingContext context)
+		{
+			this.Initialize();
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializingAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerializing(StreamingContext context)
+		{
+			this.serializing = true;
+		}
+		
+		[global::System.Runtime.Serialization.OnSerializedAttribute()]
+		[global::System.ComponentModel.EditorBrowsableAttribute(EditorBrowsableState.Never)]
+		public void OnSerialized(StreamingContext context)
+		{
+			this.serializing = false;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ExtraServices")]
+	[global::System.Runtime.Serialization.DataContractAttribute()]
+	public partial class ExtraService : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ExtraServiceId;
+		
+		private string _Name;
+		
+		private decimal _Price;
+		
+		private EntitySet<ReservationExtraService> _ReservationExtraServices;
+		
+		private bool serializing;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnExtraServiceIdChanging(int value);
+    partial void OnExtraServiceIdChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnPriceChanging(decimal value);
+    partial void OnPriceChanged();
+    #endregion
+		
+		public ExtraService()
+		{
+			this.Initialize();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExtraServiceId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=1)]
+		public int ExtraServiceId
+		{
+			get
+			{
+				return this._ExtraServiceId;
+			}
+			set
+			{
+				if ((this._ExtraServiceId != value))
+				{
+					this.OnExtraServiceIdChanging(value);
+					this.SendPropertyChanging();
+					this._ExtraServiceId = value;
+					this.SendPropertyChanged("ExtraServiceId");
+					this.OnExtraServiceIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=2)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Decimal(10,2) NOT NULL")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=3)]
+		public decimal Price
+		{
+			get
+			{
+				return this._Price;
+			}
+			set
+			{
+				if ((this._Price != value))
+				{
+					this.OnPriceChanging(value);
+					this.SendPropertyChanging();
+					this._Price = value;
+					this.SendPropertyChanged("Price");
+					this.OnPriceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ExtraService_ReservationExtraService", Storage="_ReservationExtraServices", ThisKey="ExtraServiceId", OtherKey="ExtraServiceId")]
+		[global::System.Runtime.Serialization.DataMemberAttribute(Order=4, EmitDefaultValue=false)]
+		public EntitySet<ReservationExtraService> ReservationExtraServices
+		{
+			get
+			{
+				if ((this.serializing 
+							&& (this._ReservationExtraServices.HasLoadedOrAssignedValues == false)))
+				{
+					return null;
+				}
+				return this._ReservationExtraServices;
+			}
+			set
+			{
+				this._ReservationExtraServices.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_ReservationExtraServices(ReservationExtraService entity)
+		{
+			this.SendPropertyChanging();
+			entity.ExtraService = this;
+		}
+		
+		private void detach_ReservationExtraServices(ReservationExtraService entity)
+		{
+			this.SendPropertyChanging();
+			entity.ExtraService = null;
+		}
+		
+		private void Initialize()
+		{
+			this._ReservationExtraServices = new EntitySet<ReservationExtraService>(new Action<ReservationExtraService>(this.attach_ReservationExtraServices), new Action<ReservationExtraService>(this.detach_ReservationExtraServices));
 			OnCreated();
 		}
 		

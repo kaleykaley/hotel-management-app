@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HotelManagement" Class="HotelDataDataContext" Serialization="Unidirectional" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HotelManagement2026" Class="HotelDataDataContext" Serialization="Unidirectional" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="dbo.Rooms" Member="Rooms">
     <Type Name="Room">
       <Column Name="RoomId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -10,14 +10,6 @@
       <Association Name="Room_Reservation" Member="Reservations" ThisKey="RoomId" OtherKey="RoomId" Type="Reservation" />
     </Type>
   </Table>
-  <Table Name="dbo.ExtraServices" Member="ExtraServices">
-    <Type Name="ExtraService">
-      <Column Name="ExtraServiceId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
-      <Association Name="ExtraService_ReservationExtraService" Member="ReservationExtraServices" ThisKey="ExtraServiceId" OtherKey="ExtraServiceId" Type="ReservationExtraService" />
-    </Type>
-  </Table>
   <Table Name="dbo.Guests" Member="Guests">
     <Type Name="Guest">
       <Column Name="GuestId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -27,6 +19,14 @@
       <Column Name="DocumentType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="DocumentNumber" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Association Name="Guest_Reservation" Member="Reservations" ThisKey="GuestId" OtherKey="GuestId" Type="Reservation" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ExtraServices" Member="ExtraServices">
+    <Type Name="ExtraService">
+      <Column Name="ExtraServiceId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Association Name="ExtraService_ReservationExtraService" Member="ReservationExtraServices" ThisKey="ExtraServiceId" OtherKey="ExtraServiceId" Type="ReservationExtraService" />
     </Type>
   </Table>
   <Table Name="dbo.Invoices" Member="Invoices">
