@@ -41,8 +41,8 @@ namespace HotelManagement.WPF.Views
                 // Save complete original list received from the API
                 allInvoices = invoices;
 
-                // Display all reservations initially in the DataGrid
-                dgReservations.ItemsSource = allInvoices;
+                // Display all invoices initially in the DataGrid
+                dgInvoices.ItemsSource = allInvoices;
             }
             else
             {
@@ -64,23 +64,23 @@ namespace HotelManagement.WPF.Views
 
         private void RegisterPayment_Click(object sender, RoutedEventArgs e)
         {
-            // as Reservation: "Try to convert this to a Reservation. If it works, give me the Reservation.
+            // as Invoice: "Try to convert this to an Invoice. If it works, give me the Invoice.
             // If not, give me null."
-            // Get the reservation selected by the user in the DataGrid
-            Reservation selectedReservation = dgReservations.SelectedItem as Reservation;
+            // Get the invoice selected by the user in the DataGrid
+            Invoice selectedInvoice = dgInvoices.SelectedItem as Invoice;
 
-            if (selectedReservation == null)
+            if (selectedInvoice == null)
             {
-                MessageBox.Show("Please select a reservation to edit.");
+                MessageBox.Show("Please select an invoice in order to register a payment.");
                 return;
             }
-            // Create a new ReservationWindow; pass the selected reservation to edit
-            ReservationWindow window = new ReservationWindow(selectedReservation);
+
+            // Create a new PaymentWindow; pass the selected Invoice to edit
+            PaymentWindow window = new PaymentWindow(selectedInvoice);
 
             window.Show();
 
             window.Closed += InvoiceWindow_Closed; // when this window closes, run the InvoiceWindow_Closed method to reload invoices
-
         }
 
 

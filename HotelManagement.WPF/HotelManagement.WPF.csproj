@@ -63,6 +63,7 @@
     </ApplicationDefinition>
     <Compile Include="Data\Entities\Guest.cs" />
     <Compile Include="Data\Entities\Invoice.cs" />
+    <Compile Include="Data\Entities\Payment.cs" />
     <Compile Include="Data\Entities\Reservation.cs" />
     <Compile Include="Data\Entities\Room.cs" />
     <Compile Include="Views\CheckInOutPage.xaml.cs">
@@ -88,6 +89,9 @@
     </Compile>
     <Compile Include="Windows\InvoiceWindow.xaml.cs">
       <DependentUpon>InvoiceWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PaymentWindow.xaml.cs">
+      <DependentUpon>PaymentWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ReservationWindow.xaml.cs">
       <DependentUpon>ReservationWindow.xaml</DependentUpon>
@@ -136,6 +140,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\InvoiceWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PaymentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

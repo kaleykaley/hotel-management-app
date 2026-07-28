@@ -48,7 +48,17 @@ namespace HotelManagement.API.Controllers
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
 
-            // payment doesn't exist yet, so add it
+            // Find invoice this payment belongs to
+            Invoice invoice = dc.Invoices.FirstOrDefault(i => i.InvoiceId == newPayment.InvoiceId);
+            if (invoice == null)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found."));
+            }
+
+            // Mark invoice as paid
+            invoice.InvoiceStatus = "Paid";
+
+            // Add the payment
             dc.Payments.InsertOnSubmit(newPayment);
 
             try
@@ -59,7 +69,7 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
+            // if it arrives here, everything ran well
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
@@ -86,6 +96,7 @@ namespace HotelManagement.API.Controllers
             // Payment found, so update it
             existingPayment.PaymentDate = editedPayment.PaymentDate;
             existingPayment.PaymentType = editedPayment.PaymentType;
+
 
             try
             {

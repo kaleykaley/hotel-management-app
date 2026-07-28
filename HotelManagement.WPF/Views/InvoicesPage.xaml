@@ -87,8 +87,8 @@
 
         </Border>
 
-        <!--Row 2: DataGrid to show all guests-->
-        <DataGrid x:Name="dgReservations"
+        <!--Row 2: DataGrid to show all invoices-->
+        <DataGrid x:Name="dgInvoices"
             Grid.Row="2"
             Margin="5,20,5,20"
             AutoGenerateColumns="False"
