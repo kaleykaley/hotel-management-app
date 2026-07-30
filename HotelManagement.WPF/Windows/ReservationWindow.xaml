@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF.Windows"
         mc:Ignorable="d"
-        Title="ReservationWindow" Height="450" Width="400"
+        Title="ReservationWindow" Height="700" Width="400"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
@@ -14,7 +14,7 @@
 
         <Grid.RowDefinitions>
             <!-- Title -->
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="80"/>
 
             <!-- Form -->
             <RowDefinition Height="*"/>
@@ -33,7 +33,6 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
 
-
         <!-- FORM CARD -->
         <Border Grid.Row="1"
                 Background="White"
@@ -44,6 +43,18 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    
+                    <!-- Separator -->
+                    <RowDefinition Height="Auto"/>
+
+                    <!--title EXTRA SERVICES-->
+                    <RowDefinition Height="Auto"/>
+
+                    <!-- EXTRA SERVICES -->
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -89,8 +100,6 @@
                           SelectedValuePath="RoomId"
                           VerticalContentAlignment="Center"/>
 
-
-
                 <!-- CHECK IN -->
                 <TextBlock
                     Grid.Row="2"
@@ -121,8 +130,6 @@
                     Height="30"
                     Margin="5"/>
 
-
-
                 <!-- NUMBER OF GUESTS -->
                 <TextBlock
                     Grid.Row="4"
@@ -138,11 +145,58 @@
                     Height="30"
                     Margin="5"/>
 
+                <!-- SEPARATOR -->
+                <Separator
+                    Grid.Row="5"
+                    Grid.ColumnSpan="2"
+                    Margin="0,30"/>
+
+                <!-- EXTRA SERVICES -->
+                <TextBlock
+                    Grid.Row="6"
+                    Text="EXTRA SERVICES"
+                    Foreground="#4A6FA5"
+                    FontWeight="SemiBold"
+                    VerticalAlignment="Center"/>
+
+                <ItemsControl x:Name="icExtraServices"
+              Grid.Row="7"
+              Grid.ColumnSpan="2"
+              Margin="0,10,0,0">
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!--For every ReservationExtraService object, draw one row like this-->  
+                                <CheckBox Grid.Column="0"
+                              Content="{Binding DisplayText}"
+                              IsChecked="{Binding IsSelected}"/>
+
+                                <TextBlock Grid.Column="1"
+                           Text="Qty:"
+                           VerticalAlignment="Center"
+                           Margin="10,0,5,0"/>
+
+                                <TextBox Grid.Column="2"
+                         Width="40"
+                         Text="{Binding Quantity}"/>
+
+                            </Grid>
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
             </Grid>
 
         </Border>
-
-
 
         <!-- BUTTONS -->
         <StackPanel Grid.Row="2"
@@ -150,12 +204,10 @@
                     HorizontalAlignment="Center"
                     Margin="0,15,0,0">
 
-
             <Button Content="Save"
                     Width="120"
                     Style="{StaticResource ActionButtonStyle}"
                     Click="Save_Click"/>
-
 
             <Button Content="Cancel"
                     Width="120"
@@ -163,9 +215,7 @@
                     Style="{StaticResource ActionButtonStyle}"
                     Click="Cancel_Click"/>
 
-
         </StackPanel>
-
 
     </Grid>
 

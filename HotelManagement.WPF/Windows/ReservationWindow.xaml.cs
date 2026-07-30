@@ -1,6 +1,7 @@
 ﻿using HotelManagement.WPF.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,6 +20,7 @@ namespace HotelManagement.WPF.Windows
 
         private List<Guest> guests = new List<Guest>();
         private List<Room> rooms = new List<Room>();
+        private List<ReservationExtraService> extraServices = new List<ReservationExtraService>();
 
 
         // If no Reservation is passed when creating the window, automatically use null
@@ -194,6 +196,7 @@ namespace HotelManagement.WPF.Windows
         {
             await LoadGuests();
             await LoadRooms();
+            await LoadExtraServices();
 
             if (isEditMode)
             {
@@ -240,6 +243,29 @@ namespace HotelManagement.WPF.Windows
             else
             {
                 MessageBox.Show("Error loading rooms.");
+            }
+        }
+
+        private async Task LoadExtraServices()
+        {
+            HttpResponseMessage response = await client.GetAsync("api/ExtraServices");
+
+            if (response.IsSuccessStatusCode)
+            {
+                List<ExtraService> services = await response.Content.ReadAsAsync<List<ExtraService>>();
+
+                extraServices = services.Select(s => new ReservationExtraService
+                    {
+                        Service = s,
+                        Quantity = 1
+                    })
+                    .ToList();
+
+                icExtraServices.ItemsSource = extraServices;
+            }
+            else
+            {
+                MessageBox.Show("Error loading extra services.");
             }
         }
     }

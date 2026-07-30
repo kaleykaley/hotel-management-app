@@ -61,10 +61,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\Entities\ExtraService.cs" />
     <Compile Include="Data\Entities\Guest.cs" />
     <Compile Include="Data\Entities\Invoice.cs" />
     <Compile Include="Data\Entities\Payment.cs" />
     <Compile Include="Data\Entities\Reservation.cs" />
+    <Compile Include="Data\Entities\ReservationExtraService.cs" />
     <Compile Include="Data\Entities\Room.cs" />
     <Compile Include="Views\CheckInOutPage.xaml.cs">
       <DependentUpon>CheckInOutPage.xaml</DependentUpon>
