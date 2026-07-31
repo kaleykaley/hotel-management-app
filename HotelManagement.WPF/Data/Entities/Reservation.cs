@@ -32,6 +32,8 @@ namespace HotelManagement.WPF.Data.Entities
         // Reserved, Checked_In, Checked_Out, Cancelled
         public string ReservationStatus { get; set; }
 
+        public List<ReservationExtraService> ExtraServices { get; set; } = new List<ReservationExtraService>();
+
         public int NumberOfNights =>
             (CheckOutDate - CheckInDate).Days;
 

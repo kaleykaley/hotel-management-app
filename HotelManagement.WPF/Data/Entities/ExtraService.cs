@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HotelManagement.WPF.Data.Entities
+﻿namespace HotelManagement.WPF.Data.Entities
 {
     // Additional Services Management
     // Possibility to add extra services to reservations (breakfast, spa access, room service, parking)

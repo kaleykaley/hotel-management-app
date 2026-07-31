@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HotelManagement.API.Models;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -31,6 +32,9 @@ namespace HotelManagement.API.Controllers
                 {
                     ReservationId = r.ReservationId,
 
+                    GuestId = r.GuestId,
+                    RoomId = r.RoomId,
+
                     GuestName = r.Guest.Name,
 
                     RoomNumber = r.Room.RoomNumber,
@@ -43,9 +47,21 @@ namespace HotelManagement.API.Controllers
 
                     NumberOfGuests = r.NumberOfGuests,
 
-                    ReservationStatus = r.ReservationStatus
+                    ReservationStatus = r.ReservationStatus,
+
+                    // add extra services to reservation view model
+                    ExtraServices = r.ReservationExtraServices
+                        .Select(s => new ReservationExtraServiceViewModel
+                        {
+                            ExtraServiceId = s.ExtraServiceId,
+                            ServiceName = s.ExtraService.Name,
+                            Price = s.ExtraService.Price,
+                            Quantity = s.Quantity
+                        })
+                        .ToList()
                 })
                 .ToList();
+                
 
             return Ok(listReservations);
         }
@@ -71,7 +87,18 @@ namespace HotelManagement.API.Controllers
 
                     NumberOfGuests = r.NumberOfGuests,
 
-                    ReservationStatus = r.ReservationStatus
+                    ReservationStatus = r.ReservationStatus,
+
+                    // add extra services to reservation view model
+                    ExtraServices = r.ReservationExtraServices
+                        .Select(s => new ReservationExtraServiceViewModel
+                        {
+                            ExtraServiceId = s.ExtraServiceId,
+                            ServiceName = s.ExtraService.Name,
+                            Price = s.ExtraService.Price,
+                            Quantity = s.Quantity
+                        })
+                        .ToList()
                 })
                 .FirstOrDefault();
 
@@ -88,9 +115,9 @@ namespace HotelManagement.API.Controllers
 
         // POST api/Reservations
         // Insert a Reservation, returns ihttp result
-        public IHttpActionResult Post([FromBody] Reservation newReservation)
+        public IHttpActionResult Post([FromBody] ReservationViewModel model)
         {
-            string error = ValidateReservation(newReservation);
+            string error = ValidateReservation(model);
 
             if (error != null)
             {
@@ -98,19 +125,35 @@ namespace HotelManagement.API.Controllers
             }
 
             // New reservation defaults to "Reserved" status
-            newReservation.ReservationStatus = "Reserved";
-
-            // reservation doesn't exist yet, so add it
-            dc.Reservations.InsertOnSubmit(newReservation);
-
-            try
+            Reservation reservation = new Reservation
             {
-                dc.SubmitChanges();
-            }
-            catch (Exception e)
+                GuestId = model.GuestId,
+                RoomId = model.RoomId,
+                CheckInDate = model.CheckInDate,
+                CheckOutDate = model.CheckOutDate,
+                NumberOfGuests = model.NumberOfGuests,
+                ReservationStatus = "Reserved"
+            };
+
+            dc.Reservations.InsertOnSubmit(reservation);
+            dc.SubmitChanges();
+
+            if (model.ExtraServices != null)
             {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
+                foreach (var service in model.ExtraServices)
+                {
+                    dc.ReservationExtraServices.InsertOnSubmit(
+                        new ReservationExtraService
+                        {
+                            ReservationId = reservation.ReservationId,
+                            ExtraServiceId = service.ExtraServiceId,
+                            Quantity = service.Quantity
+                        });
+                }
             }
+
+            dc.SubmitChanges();
+
             // if it arrives here, correu tudo bem
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
@@ -118,9 +161,9 @@ namespace HotelManagement.API.Controllers
         // PUT: like update from CRUD
 
         // PUT api/Reservations/5
-        public IHttpActionResult Put(int id, [FromBody] Reservation editedReservation)
+        public IHttpActionResult Put(int id, [FromBody] ReservationViewModel model)
         {
-            string error = ValidateReservation(editedReservation);
+            string error = ValidateReservation(model);
 
             if (error != null)
             {
@@ -135,12 +178,32 @@ namespace HotelManagement.API.Controllers
                     "There is no Reservation with this ID to edit."));
             }
             // Reservation found, so update it
-            existingReservation.GuestId = editedReservation.GuestId;
-            existingReservation.RoomId = editedReservation.RoomId;
-            existingReservation.CheckInDate = editedReservation.CheckInDate;
-            existingReservation.CheckOutDate = editedReservation.CheckOutDate;
-            existingReservation.NumberOfGuests = editedReservation.NumberOfGuests;
-            existingReservation.ReservationStatus = editedReservation.ReservationStatus;
+            existingReservation.GuestId = model.GuestId;
+            existingReservation.RoomId = model.RoomId;
+            existingReservation.CheckInDate = model.CheckInDate;
+            existingReservation.CheckOutDate = model.CheckOutDate;
+            existingReservation.NumberOfGuests = model.NumberOfGuests;
+            existingReservation.ReservationStatus = model.ReservationStatus;
+
+            // Replace all existing services with new list
+            var oldServices = dc.ReservationExtraServices.Where(x => x.ReservationId == id);
+
+            dc.ReservationExtraServices.DeleteAllOnSubmit(oldServices);
+
+            // add the new services
+            if (model.ExtraServices != null)
+            {
+                foreach (var service in model.ExtraServices)
+                {
+                    dc.ReservationExtraServices.InsertOnSubmit(
+                        new ReservationExtraService
+                        {
+                            ReservationId = id,
+                            ExtraServiceId = service.ExtraServiceId,
+                            Quantity = service.Quantity
+                        });
+                }
+            }
 
             try
             {
@@ -248,8 +311,13 @@ namespace HotelManagement.API.Controllers
                 "There is no Reservation with this ID to delete."));
         }
 
-        private string ValidateReservation(Reservation reservation)
+        private string ValidateReservation(ReservationViewModel reservation)
         {
+            if (reservation == null)
+            {
+                return "No reservation data supplied.";
+            }
+
             var guest = dc.Guests.FirstOrDefault(g => g.GuestId == reservation.GuestId);
 
             if (guest == null)
@@ -280,7 +348,9 @@ namespace HotelManagement.API.Controllers
                 return $"This room only allows a maximum of {room.Capacity} guests.";
             }
 
-            /*bool conflict = dc.Reservations.Any(r =>
+            // check that reservation dates don't overlap
+            bool conflict = dc.Reservations.Any(r =>
+                r.ReservationId != reservation.ReservationId &&
                 r.RoomId == reservation.RoomId &&
                 r.ReservationStatus != "Cancelled" &&
                 reservation.CheckInDate < r.CheckOutDate &&
@@ -290,7 +360,23 @@ namespace HotelManagement.API.Controllers
             if (conflict)
             {
                 return "Room already has a reservation during these dates.";
-            }*/
+            }
+
+            if (reservation.ExtraServices != null)
+            {
+                foreach (var service in reservation.ExtraServices)
+                {
+                    if (!dc.ExtraServices.Any(s => s.ExtraServiceId == service.ExtraServiceId))
+                    {
+                        return $"Extra service with ID {service.ExtraServiceId} does not exist.";
+                    }
+
+                    if (service.Quantity <= 0)
+                    {
+                        return "Service quantity must be greater than zero.";
+                    }
+                }
+            }
 
             return null; // everything is valid
         }

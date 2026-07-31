@@ -151,7 +151,6 @@ namespace HotelManagement.WPF.Windows
                 return false;
             }
 
-
             reservation.GuestId = (int)cbGuests.SelectedValue;
             reservation.RoomId = (int)cbRooms.SelectedValue;
 
@@ -189,6 +188,16 @@ namespace HotelManagement.WPF.Windows
                 return false;
             }
 
+            reservation.ExtraServices = extraServices.Where(s => s.IsSelected).ToList();
+
+            foreach (var service in reservation.ExtraServices)
+            {
+                if (service.Quantity <= 0)
+                {
+                    MessageBox.Show("Extra service quantity must be greater than zero.");
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -201,6 +210,7 @@ namespace HotelManagement.WPF.Windows
             if (isEditMode)
             {
                 LoadReservationData();
+                LoadSelectedExtraServices();
             }
         }
 
@@ -252,14 +262,17 @@ namespace HotelManagement.WPF.Windows
 
             if (response.IsSuccessStatusCode)
             {
-                List<ExtraService> services = await response.Content.ReadAsAsync<List<ExtraService>>();
+                List<ExtraService> services =
+                    await response.Content.ReadAsAsync<List<ExtraService>>();
 
                 extraServices = services.Select(s => new ReservationExtraService
-                    {
-                        Service = s,
-                        Quantity = 1
-                    })
-                    .ToList();
+                {
+                    ExtraServiceId = s.ExtraServiceId,
+                    ServiceName = s.Name,
+                    Price = s.Price,
+                    Quantity = 1
+                })
+                .ToList();
 
                 icExtraServices.ItemsSource = extraServices;
             }
@@ -267,6 +280,29 @@ namespace HotelManagement.WPF.Windows
             {
                 MessageBox.Show("Error loading extra services.");
             }
+        }
+
+        // load extra services to form when editing existing reservation
+        private void LoadSelectedExtraServices()
+        {
+            if (reservation.ExtraServices == null)
+            {
+                return;
+            }
+
+            foreach (var service in extraServices)
+            {
+                var existing = reservation.ExtraServices
+                    .FirstOrDefault(s => s.ExtraServiceId == service.ExtraServiceId);
+
+                if (existing != null)
+                {
+                    service.IsSelected = true;
+                    service.Quantity = existing.Quantity;
+                }
+            }
+
+            icExtraServices.Items.Refresh();
         }
     }
 

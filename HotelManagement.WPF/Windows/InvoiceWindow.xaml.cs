@@ -1,6 +1,7 @@
 ﻿using HotelManagement.WPF.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,6 +37,15 @@ namespace HotelManagement.WPF.Windows
             {
                 // Convert JSON returned by the API into a list of Reservation objects
                 var reservations = await response.Content.ReadAsAsync<List<Reservation>>();
+
+                // FOR TESTING
+
+                foreach (var r in reservations)
+                {
+                    MessageBox.Show(
+                        r.DisplayName +
+                        "\nExtra services: " + r.ExtraServices.Count);
+                }
 
                 // Save complete original list received from the API
                 allReservations = reservations;
@@ -139,10 +149,21 @@ namespace HotelManagement.WPF.Windows
 
             txtRoomCharge.Text = roomCharge.ToString("C");
 
-            txtTotalDue.Text = roomCharge.ToString("C");
             // ADD EXTRA SERVICES CHARGES
 
+            decimal extraServicesCharge = 0;
 
+            if (selectedReservation.ExtraServices != null)
+            {
+                foreach (ReservationExtraService service in selectedReservation.ExtraServices)
+                {
+                    extraServicesCharge += service.Price * service.Quantity;
+                }
+            }
+
+            txtExtraServices.Text = extraServicesCharge.ToString("C");
+
+            txtTotalDue.Text = (roomCharge + extraServicesCharge).ToString("C");
         }
     }
 }

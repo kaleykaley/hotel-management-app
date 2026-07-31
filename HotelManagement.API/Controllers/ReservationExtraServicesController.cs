@@ -8,6 +8,7 @@ using System.Web.Http;
 
 namespace HotelManagement.API.Controllers
 {
+    // DELETE THIS CONTROLLER?
     public class ReservationExtraServicesController : ApiController
     {
         private readonly HotelDataDataContext dc =

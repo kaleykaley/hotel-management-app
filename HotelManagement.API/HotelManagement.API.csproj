@@ -173,6 +173,7 @@
       <DependentUpon>HotelData.dbml</DependentUpon>
     </Compile>
     <Compile Include="Models\InvoiceViewModel.cs" />
+    <Compile Include="Models\ReservationExtraServiceViewModel.cs" />
     <Compile Include="Models\ReservationViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
