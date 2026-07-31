@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:HotelManagement.WPF.Views"
+      xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CheckInOutPage">
@@ -22,13 +23,24 @@
         </Grid.RowDefinitions>
 
         <!-- TITLE - Row 0 -->
-        <TextBlock
-            Grid.Row="0"
-            Text="Front Desk"
-            FontSize="24"
+        <StackPanel Grid.Row="0"
+            Orientation="Horizontal"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Foreground="#2F5597"/>
+            VerticalAlignment="Center">
+
+            <fa:IconImage Icon="DoorOpen"
+                  Width="30"
+                  Height="30"
+                  Foreground="#2F5597"
+                  Margin="0,0,10,0"/>
+
+            <TextBlock
+        Text="Front Desk"
+        FontSize="24"
+        Foreground="#2F5597"
+        VerticalAlignment="Center"/>
+
+        </StackPanel>
 
         <!--FILTERS - Row 1 -->
         <Border Grid.Row="1"

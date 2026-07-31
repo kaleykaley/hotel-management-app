@@ -19,6 +19,9 @@
             <Setter Property="Margin" Value="10"/>
             <Setter Property="FontSize" Value="15"/>
 
+            <Setter Property="Padding" Value="20,0,0,0"/>
+
+
             <Setter Property="Template">
 
                 <Setter.Value>
@@ -31,7 +34,7 @@
                             CornerRadius="10">
 
                             <ContentPresenter
-                            HorizontalAlignment="Center"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"/>
 
                         </Border>

@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF"
+        xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1200">
 
@@ -27,54 +28,139 @@
             <Grid>
                 <!--ROWS: Title / Buttons / Credits-->
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="90"/>
+                    <RowDefinition Height="120"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- TITLE -->
-                <TextBlock 
-                    Grid.Row="0"
-                    Text="HOTEL MANAGEMENT"
-                    Foreground="White"
-                    FontSize="16"
-                    FontWeight="Bold"
+                <StackPanel Grid.Row="0"
                     HorizontalAlignment="Center"
-                    Margin="0,20,0,20"/>
+                    VerticalAlignment="Center">
 
-                <TextBlock 
-                    Grid.Row="0"
-                    Text="SYSTEM"
-                    Foreground="White"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    HorizontalAlignment="Center"
-                    Margin="0,45,0,20"/>
+                    <fa:IconImage Icon="Landmark"
+                                  Width="35"
+                                  Height="35"
+                                  Foreground="White"
+                                  HorizontalAlignment="Center"
+                                  Margin="0,0,0,5"/>
 
+                    <TextBlock Text="HOTEL MANAGEMENT"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="SYSTEM"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+
+                </StackPanel>
 
                 <!-- BUTTONS -->
                 <StackPanel Grid.Row="1"
                     VerticalAlignment="Top"
-                    Margin="0,0,0,0">
+                    Margin="5,0,0,0">
 
+                    <!-- DASHBOARD BUTTON -->
                     <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Dashboard"
-                        Click="Dashboard_Click"/>
+                        Click="Dashboard_Click">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <fa:IconImage Icon="Home"
+                                          Width="20"
+                                          Foreground="White"
+                                          Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Dashboard"/>
+
+                        </StackPanel>
+
+                    </Button>
+                    
+                    <!-- FRONT DESK BUTTON -->
                     <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Front Desk"
-                        Click="FrontDesk_Click"/>
+                            Click="FrontDesk_Click">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <fa:IconImage Icon="DoorOpen"
+                                          Width="20"
+                                          Foreground="White"
+                                          Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Front Desk"/>
+
+                        </StackPanel>
+
+                    </Button>
+                    <!-- GUESTS BUTTON -->
                     <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Guests"
-                        Click="Guests_Click"/>
+                        Click="Guests_Click">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <fa:IconImage Icon="Users"
+                                          Width="20"
+                                          Foreground="White"
+                                          Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Guests"/>
+
+                        </StackPanel>
+
+                    </Button>
+
+                    <!-- ROOMS BUTTON -->
                     <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Rooms"
-                        Click="Rooms_Click"/>
+                        Click="Rooms_Click">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <fa:IconImage Icon="Bed"
+                                          Width="20"
+                                          Foreground="White"
+                                          Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Rooms"/>
+
+                        </StackPanel>
+
+                    </Button>
+
+                    <!-- RESERVATIONS BUTTON -->
                     <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Reservations"
-                        Click="Reservations_Click"/>
+                        Click="Reservations_Click">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <fa:IconImage Icon="CalendarDays"
+                                                Width="20"
+                                                Foreground="White"
+                                                Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Reservations"/>
+
+                        </StackPanel>
+
+                    </Button>
+                    
+                    <!-- BILLING BUTTON -->
                     <Button Style="{StaticResource NavButtonStyle}"
-                        Content="Billing"
-                        Click="Invoices_Click"/>
+                        Click="Invoices_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="FileInvoiceDollar"
+                                              Width="20"
+                                              Foreground="White"
+                                              Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Billing"/>
+                        </StackPanel>
+                    </Button>
+                    
                 </StackPanel>
 
 
