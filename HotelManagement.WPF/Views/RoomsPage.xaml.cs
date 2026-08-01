@@ -57,6 +57,34 @@ namespace HotelManagement.WPF.Views
         // implement filters through api?
         private void Search_Click(object sender, RoutedEventArgs e)
         {
+            /// FIX SEARCH 
+            if (!ValidatePriceFilters(out decimal minPrice, out decimal maxPrice))
+                return;
+
+            // Start with all reservations
+            IEnumerable<Room> filtered = allRooms;
+
+            // Filter by room type if one was selected
+            string roomType = (cbRoomType.SelectedItem as ComboBoxItem)?.Content.ToString();
+
+            if (roomType != "All")
+            {
+                filtered = filtered.Where(r => r.RoomType == roomType);
+            }
+
+            // Filter by room status if one was selected
+            string statusType = (cbStatus.SelectedItem as ComboBoxItem)?.Content.ToString();
+
+            if (statusType != "All")
+            {
+                filtered = filtered.Where(r => r.RoomStatus == statusType);
+            }
+
+            // Filter by min and/or max price if selected
+            filtered = filtered.Where(r => r.PricePerNight >= minPrice && r.PricePerNight <= maxPrice);
+
+            // Display filtered results
+            dgRooms.ItemsSource = filtered.ToList();
         }
 
 
@@ -153,6 +181,32 @@ namespace HotelManagement.WPF.Views
 
                 MessageBox.Show($"Delete failed:\n{error}");
             }
+        }
+
+        private bool ValidatePriceFilters(out decimal minPrice, out decimal maxPrice)
+        {
+            minPrice = 0;
+            maxPrice = 9999;
+
+            if (!decimal.TryParse(txtMinPrice.Text, out minPrice) || minPrice < 0)
+            {
+                MessageBox.Show("Minimum price must be a number greater than or equal to 0.");
+                return false;
+            }
+
+            if (!decimal.TryParse(txtMaxPrice.Text, out maxPrice) || maxPrice < 0)
+            {
+                MessageBox.Show("Maximum price must be a number greater than or equal to 0.");
+                return false;
+            }
+
+            if (minPrice > maxPrice)
+            {
+                MessageBox.Show("Minimum price cannot be greater than maximum price.");
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -135,6 +135,7 @@
                 x:Name="dpCheckIn"
                 Grid.Row="0"
                 Grid.Column="4"
+                VerticalContentAlignment="Center"
                 Height="30"
                 Margin="5"/>
 
@@ -154,6 +155,7 @@
                 x:Name="dpCheckOut"
                 Grid.Row="1"
                 Grid.Column="4"
+                VerticalContentAlignment="Center"
                 Height="30"
                 Margin="5"/>
 
@@ -168,10 +170,10 @@
                     Margin="0,15,0,0">
 
                     <Button
-                        Content="Filter Reservations"
+                        Content="Search"
                         Width="120"
                         Style="{StaticResource ActionButtonStyle}"
-                        Click="Filter_Click"/>
+                        Click="Search_Click"/>
 
                     <Button
                         Content="Clear Filters"

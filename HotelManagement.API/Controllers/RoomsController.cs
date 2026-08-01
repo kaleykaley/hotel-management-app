@@ -49,13 +49,8 @@ namespace HotelManagement.API.Controllers
                     Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
 
-            Room existingRoom = dc.Rooms.FirstOrDefault(r => r.RoomId == newRoom.RoomId);
+            newRoom.RoomStatus = "Available";
 
-            if (existingRoom != null) // Room already exists (w/ id), so cant add it
-            {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.Conflict,
-                    "There is already a registered Room with this ID."));
-            }
             // room doesn't exist yet, so add it
             dc.Rooms.InsertOnSubmit(newRoom);
 
@@ -72,7 +67,6 @@ namespace HotelManagement.API.Controllers
         }
 
         // PUT: like update from CRUD
-
         // PUT api/Rooms/5
         public IHttpActionResult Put(int id, [FromBody] Room editedRoom)
         {

@@ -62,7 +62,7 @@
                 <!-- BUTTONS -->
                 <StackPanel Grid.Row="1"
                     VerticalAlignment="Top"
-                    Margin="5,0,0,0">
+                    Margin="0,0,0,0">
 
                     <!-- DASHBOARD BUTTON -->
                     <Button Style="{StaticResource NavButtonStyle}"

@@ -42,15 +42,55 @@ namespace HotelManagement.WPF.Views
 
                 dgGuests.ItemsSource = allGuests;
             }
+            else
+            {
+                MessageBox.Show("Could not load guests.");
+            }
         }
 
-        private void Search_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Filter guests
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Search_Click(object sender, RoutedEventArgs e)
         {
+            string selectedFilter = (cbGuestType.SelectedItem as ComboBoxItem)?.Content.ToString();
 
+            if (selectedFilter == "All")
+            {
+                dgGuests.ItemsSource = allGuests;
+            }
+
+            else if (selectedFilter == "Guests with Active Reservation")
+            {
+                HttpResponseMessage response = await client.GetAsync("api/Guests/ActiveReservations");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var guests = await response.Content.ReadAsAsync<List<Guest>>();
+
+                    dgGuests.ItemsSource = guests;
+                }
+            }
+
+            else if (selectedFilter == "Guests with Stay History")
+            {
+                HttpResponseMessage response = await client.GetAsync("api/Guests/WithStayHistory");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var guests = await response.Content.ReadAsAsync<List<Guest>>();
+
+                    dgGuests.ItemsSource = guests;
+                }
+            }
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
+            cbGuestType.SelectedItem = cbGuestType.Items[0]; // reset to "All"
+            dgGuests.ItemsSource = allGuests;
 
         }
 

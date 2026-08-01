@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:HotelManagement.WPF.Views"
       xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="550" d:DesignWidth="900"
       Title="RoomsPage">
 
     <Grid Background="#F5F7FA"
@@ -139,7 +139,7 @@
                     </ComboBoxItem>
 
                     <ComboBoxItem>
-                        Maintenance
+                        Under_Maintenance
                     </ComboBoxItem>
 
                 </ComboBox>
@@ -285,9 +285,7 @@
             <Button Style="{StaticResource ActionButtonStyle}"
                       Content="Delete"
                       Click="Delete_Click"/>
-
         </StackPanel>
-
 
     </Grid>
 </Page>

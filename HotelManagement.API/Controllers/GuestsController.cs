@@ -52,32 +52,56 @@ namespace HotelManagement.API.Controllers
 
             // Get guest's completed reservations and combine them with room info
             // "Go through Reservations table, and for each row, temporarily call that row reservation"
+            // Get the guest's completed reservations
             var history = from reservation in dc.Reservations
 
-                          // Join Reservations with Rooms to access the room number
-                          join room in dc.Rooms
-                          on reservation.RoomId equals room.RoomId
-
-                          // Only get guest's past stays (completed reservations)
+                              // Only get this guest's past stays
                           where reservation.GuestId == id
                           && reservation.ReservationStatus == "Checked_Out"
 
-                          // Create a simplified object to send to the WPF client
+                          // Create the object sent to WPF
                           select new StayHistoryViewModel
                           {
                               ReservationId = reservation.ReservationId,
 
-                              // Get room number from the joined Rooms table
-                              RoomNumber = room.RoomNumber,
+                              // Access room through the Reservation relationship
+                              RoomNumber = reservation.Room.RoomNumber,
 
                               CheckInDate = reservation.CheckInDate,
                               CheckOutDate = reservation.CheckOutDate,
 
-                              // Calculate how many nights the guest stayed
+                              // Calculate total nights stayed
                               Nights = (reservation.CheckOutDate -
-                                        reservation.CheckInDate).Days,
+                                        reservation.CheckInDate).Days
                           };
-            return Ok(history.ToList()); // convert to list of StayHistoryViewModel and return as JSON
+
+            return Ok(history.ToList());
+        }
+
+        // GET api/Guests/ActiveReservations
+        [Route("api/Guests/ActiveReservations")]
+        public IHttpActionResult GetGuestsWithActiveReservations()
+        {
+            var guests = dc.Guests
+                .Where(g => dc.Reservations.Any(r =>
+                    r.GuestId == g.GuestId &&
+                    (r.ReservationStatus == "Reserved" ||
+                     r.ReservationStatus == "Checked_In")));
+
+            return Ok(guests.ToList());
+        }
+
+        // GET api/Guests/WithStayHistory
+        [Route("api/Guests/WithStayHistory")]
+        public IHttpActionResult GetGuestsWithStayHistory()
+        {
+            // Get guests where there exists at least one checked-out reservation
+            var guests = dc.Guests
+                .Where(g => dc.Reservations.Any(r =>
+                    r.GuestId == g.GuestId &&
+                    r.ReservationStatus == "Checked_Out"));
+
+            return Ok(guests.ToList());
         }
 
         // POST api/guests
@@ -169,8 +193,7 @@ namespace HotelManagement.API.Controllers
 
                 if (activeReservation != null)
                 {
-                    return BadRequest(
-                        "Guest cannot be deleted because they have an active reservation.");
+                    return BadRequest("Guest cannot be deleted because they have an active reservation.");
                 }
 
                 // No active reservations, so delete guest

@@ -51,6 +51,9 @@ namespace HotelManagement.WPF.Views
             {
                 MessageBox.Show("Error loading reservations.");
             }
+
+            await LoadGuests();
+            await LoadRooms();
         }
 
         private async Task LoadGuests()
@@ -68,6 +71,11 @@ namespace HotelManagement.WPF.Views
 
                 cbGuests.DisplayMemberPath = "Name";
                 cbGuests.SelectedValuePath = "GuestId";
+            }
+            else
+            {
+                MessageBox.Show("Error loading reservations.");
+
             }
         }
 
@@ -87,6 +95,10 @@ namespace HotelManagement.WPF.Views
                 cbRooms.DisplayMemberPath = "RoomNumber";
                 cbRooms.SelectedValuePath = "RoomId";
             }
+            else
+            {
+                MessageBox.Show("Error loading rooms.");
+            }
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
@@ -98,9 +110,45 @@ namespace HotelManagement.WPF.Views
             dgReservations.ItemsSource = allReservations;
         }
 
-        private void Filter_Click(object sender, RoutedEventArgs e)
+        private void Search_Click(object sender, RoutedEventArgs e)
         {
+            // Start with all reservations
+            IEnumerable<Reservation> filtered = allReservations;
 
+            // Filter by guest if one was selected
+            if (cbGuests.SelectedValue != null)
+            {
+                int guestId = (int)cbGuests.SelectedValue;
+
+                filtered = filtered.Where(r =>r.GuestId == guestId);
+            }
+
+            // Filter by room if one was selected
+            if (cbRooms.SelectedValue != null)
+            {
+                int roomId = (int)cbRooms.SelectedValue;
+
+                filtered = filtered.Where(r => r.RoomId == roomId);
+            }
+
+            // Filter by check-in date if selected
+            if (dpCheckIn.SelectedDate != null)
+            {
+                DateTime checkIn = dpCheckIn.SelectedDate.Value;
+
+                filtered = filtered.Where(r => r.CheckInDate.Date == checkIn.Date);
+            }
+
+            // Filter by check-out date if selected
+            if (dpCheckOut.SelectedDate != null)
+            {
+                DateTime checkOut = dpCheckOut.SelectedDate.Value;
+
+                filtered = filtered.Where(r => r.CheckOutDate.Date == checkOut.Date);
+            }
+
+            // Display filtered results
+            dgReservations.ItemsSource = filtered.ToList();
         }
 
         private async void AddReservation_Click(object sender, RoutedEventArgs e)
@@ -167,8 +215,7 @@ namespace HotelManagement.WPF.Views
                 return;
 
             HttpResponseMessage response =
-                await client.DeleteAsync(
-                $"api/Reservations/{selectedReservation.ReservationId}");
+                await client.DeleteAsync($"api/Reservations/{selectedReservation.ReservationId}");
 
             if (response.IsSuccessStatusCode)
             {

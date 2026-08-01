@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagement.WPF.Windows"
         mc:Ignorable="d"
-        Title="RoomWindow" Height="450" Width="400"
+        Title="RoomWindow" Height="520" Width="400"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     
@@ -48,6 +48,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
 
@@ -68,6 +69,7 @@
                 <TextBox x:Name="txtRoomNumber"
                          Grid.Column="1"
                          Height="30"
+                         VerticalContentAlignment="Center"
                          Margin="5"/>
 
                 <!-- TYPE -->
@@ -111,6 +113,7 @@
                          Grid.Row="2"
                          Grid.Column="1"
                          Height="30"
+                         VerticalContentAlignment="Center"
                          Margin="5"/>
 
 
@@ -127,7 +130,9 @@
                          Grid.Row="3"
                          Grid.Column="1"
                          Height="30"
+                         VerticalContentAlignment="Center"
                          Margin="5"/>
+                
                 <!-- STATUS -->
                 <TextBlock
                     Grid.Row="4"
@@ -136,38 +141,38 @@
                     FontWeight="SemiBold"
                     VerticalAlignment="Center"/>
 
+                <TextBox
+                    x:Name="txtStatus"
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Height="30"
+                    Margin="5"
+                    IsReadOnly="True"
+                    VerticalContentAlignment="Center"/>
 
-                <ComboBox x:Name="cbStatus"
-                          Grid.Row="4"
-                          Grid.Column="1"
-                          Height="30"
-                          Margin="5"
-                          VerticalContentAlignment="Center">
+                <StackPanel Grid.Row="5"
+                            Grid.ColumnSpan="2"
+                            Orientation="Horizontal"
+                            Margin="5">
 
-                    <ComboBoxItem>
-                        Available
-                    </ComboBoxItem>
+                    <Button x:Name="btnMaintenance"
+                        Content="Set Maintenance"
+                        Width="120"
+                        Click="SetMaintenance_Click"
+                        Style="{StaticResource ActionButtonStyle}"/>
 
-                    <ComboBoxItem>
-                        Occupied
-                    </ComboBoxItem>
+                    <Button x:Name="btnAvailable"
+                        Content="Set Available"
+                        Width="120"
+                        Margin="10,0,0,0"
+                        Click="SetAvailable_Click"
+                        Style="{StaticResource ActionButtonStyle}"/>
 
-                    <ComboBoxItem>
-                        Maintenance
-                    </ComboBoxItem>
-
-                    <ComboBoxItem>
-                        Reserved
-                    </ComboBoxItem>
-
-                </ComboBox>
-
+                </StackPanel>
 
             </Grid>
 
         </Border>
-
-
 
         <!-- BUTTONS -->
         <StackPanel Grid.Row="2"
@@ -188,9 +193,7 @@
                     Style="{StaticResource ActionButtonStyle}"
                     Click="Cancel_Click"/>
 
-
         </StackPanel>
-
 
     </Grid>
 

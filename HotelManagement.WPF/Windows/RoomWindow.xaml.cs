@@ -1,5 +1,7 @@
 ﻿using HotelManagement.WPF.Data.Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Windows;
 
@@ -35,6 +37,8 @@ namespace HotelManagement.WPF.Windows
 
                 txtRoomNumber.IsEnabled = false;
 
+                btnMaintenance.Visibility = Visibility.Visible;
+                btnAvailable.Visibility = Visibility.Visible;
 
                 LoadRoomData();
             }
@@ -45,6 +49,10 @@ namespace HotelManagement.WPF.Windows
                 isEditMode = false;
 
                 txtTitle.Text = "Add Room";
+                txtStatus.Text = "Available";
+
+                btnMaintenance.Visibility = Visibility.Collapsed;
+                btnAvailable.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -54,8 +62,8 @@ namespace HotelManagement.WPF.Windows
             txtRoomNumber.Text = room.RoomNumber.ToString();
             txtCapacity.Text = room.Capacity.ToString();
             cbRoomType.Text = room.RoomType;
-            cbStatus.Text = room.RoomStatus;
             txtPrice.Text = room.PricePerNight.ToString();
+            txtStatus.Text = room.RoomStatus;
         }
 
         private async void Save_Click(object sender, RoutedEventArgs e)
@@ -63,6 +71,23 @@ namespace HotelManagement.WPF.Windows
             if (!GetRoomDataFromForm())
             {
                 return;
+            }
+
+            // Check if the room number already exists when adding a new room
+            if (!isEditMode)
+            {
+                HttpResponseMessage check = await client.GetAsync("api/Rooms");
+
+                if (check.IsSuccessStatusCode)
+                {
+                    var rooms = await check.Content.ReadAsAsync<List<Room>>();
+
+                    if (rooms.Any(r => r.RoomNumber == room.RoomNumber))
+                    {
+                        MessageBox.Show("A room with this number already exists.");
+                        return;
+                    }
+                }
             }
 
             string message;
@@ -76,9 +101,7 @@ namespace HotelManagement.WPF.Windows
                 message = "Are you sure you want to add this room?";
             }
 
-            MessageBoxResult result = MessageBox.Show(message,"Confirm",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+            MessageBoxResult result = MessageBox.Show(message,"Confirm", MessageBoxButton.YesNo,MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.No)
             {
@@ -129,6 +152,7 @@ namespace HotelManagement.WPF.Windows
         // helper to build room object from the form
         private bool GetRoomDataFromForm()
         {
+
             int roomNumber;
 
             if (int.TryParse(txtRoomNumber.Text, out roomNumber))
@@ -157,7 +181,6 @@ namespace HotelManagement.WPF.Windows
                 return false;
             }
             room.RoomType = cbRoomType.Text;
-            room.RoomStatus = cbStatus.Text;
 
             decimal price;
 
@@ -171,7 +194,29 @@ namespace HotelManagement.WPF.Windows
                 return false;
             }
 
+            // New rooms always start available
+            if (!isEditMode)
+            {
+                room.RoomStatus = "Available";
+            }
+            else
+            {
+                room.RoomStatus = txtStatus.Text;
+            }
+
             return true;
+        }
+
+        private void SetMaintenance_Click(object sender, RoutedEventArgs e)
+        {
+            room.RoomStatus = "Maintenance";
+            txtStatus.Text = "Maintenance";
+        }
+
+        private void SetAvailable_Click(object sender, RoutedEventArgs e)
+        {
+            room.RoomStatus = "Available";
+            txtStatus.Text = "Available";
         }
     }
 }

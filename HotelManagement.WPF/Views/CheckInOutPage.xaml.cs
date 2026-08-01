@@ -85,7 +85,7 @@ namespace HotelManagement.WPF.Views
             HttpResponseMessage response = await client.PutAsync($"api/Reservations/{selectedReservation.ReservationId}/CheckIn", null);
             if (response.IsSuccessStatusCode)
             {
-                MessageBox.Show($"{selectedReservation.GuestName} has been checked in successfully.");
+                MessageBox.Show($"{selectedReservation.GuestName} has been checked in successfully. Room #{selectedReservation.RoomNumber} is now occupied.");
 
                 // Reload reservations from API
                 //ReservationsPage_Loaded(null, null);
@@ -134,7 +134,7 @@ namespace HotelManagement.WPF.Views
             HttpResponseMessage response = await client.PutAsync($"api/Reservations/{selectedReservation.ReservationId}/CheckOut", null);
             if (response.IsSuccessStatusCode)
             {
-                MessageBox.Show($"{selectedReservation.GuestName} has been checked out successfully.");
+                MessageBox.Show($"{selectedReservation.GuestName} has been checked out successfully. Room #{selectedReservation.RoomNumber} is now available.");
             }
             else
             {

@@ -237,6 +237,7 @@ namespace HotelManagement.API.Controllers
             }
 
             reservation.ReservationStatus = "Checked_In";
+            reservation.Room.RoomStatus = "Occupied"; // room is now occupied
 
             try
             {
@@ -270,6 +271,7 @@ namespace HotelManagement.API.Controllers
             }
 
             reservation.ReservationStatus = "Checked_Out";
+            reservation.Room.RoomStatus = "Available"; // room becomes available again after check-out
 
             try
             {
