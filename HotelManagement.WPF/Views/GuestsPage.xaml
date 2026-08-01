@@ -49,10 +49,11 @@
         Background="White"
         CornerRadius="12"
         Padding="20"
+        Width="400"
         HorizontalAlignment="Center"
         Margin="0,0,0,20">
 
-            <Grid>
+            <Grid HorizontalAlignment="Center">
                 <!--2 rows: FILTERS / SEARCH/CLEAR BUTTONS-->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -62,7 +63,7 @@
                 <Grid.ColumnDefinitions>
 
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="250"/>
 
 
                 </Grid.ColumnDefinitions>
@@ -79,6 +80,7 @@
                 <ComboBox x:Name="cbGuestType"
                     Grid.Column="1"
                     Height="30"
+                    HorizontalAlignment="Stretch"
                     Margin="5,0,5,5"
                     SelectedIndex="0"
                     VerticalContentAlignment="Center">
@@ -103,7 +105,7 @@
                 <!-- BUTTONS -->
                 <StackPanel
                     Grid.Row="1"
-                    Grid.ColumnSpan="8"
+                    Grid.ColumnSpan="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Margin="0,15,0,0">

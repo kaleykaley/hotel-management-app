@@ -63,6 +63,12 @@ namespace HotelManagement.WPF.Views
                 return;
             }
 
+            if (selectedReservation.ReservationStatus != "Reserved")
+            {
+                MessageBox.Show("This reservation is not in a valid state for check-in.");
+                return;
+            }
+
             string message = $"Are you sure you want to check in guest: {selectedReservation.GuestName}?";
 
 
@@ -106,6 +112,13 @@ namespace HotelManagement.WPF.Views
                 MessageBox.Show("Please select a reservation first.");
                 return;
             }
+
+            if (selectedReservation.ReservationStatus != "Checked_In")
+            {
+                MessageBox.Show("This reservation is not in a valid state for check-out.");
+                return;
+            }
+
             string message = $"Are you sure you want to check out guest: {selectedReservation.GuestName}?";
 
 
@@ -117,7 +130,6 @@ namespace HotelManagement.WPF.Views
             {
                 return;
             }
-
 
             HttpResponseMessage response = await client.PutAsync($"api/Reservations/{selectedReservation.ReservationId}/CheckOut", null);
             if (response.IsSuccessStatusCode)

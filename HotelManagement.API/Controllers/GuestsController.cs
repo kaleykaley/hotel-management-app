@@ -11,8 +11,7 @@ namespace HotelManagement.API.Controllers
     public class GuestsController : ApiController
     {
         private readonly HotelDataDataContext dc =
-            new HotelDataDataContext(
-                ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
+            new HotelDataDataContext(ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
         // GET api/Guests
         // retrieve entire list of categories
@@ -34,6 +33,51 @@ namespace HotelManagement.API.Controllers
             }
             // guest not found, sends 404 default
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Guest not found."));
+        }
+
+
+        // GET api/Guests/5/StayHistory
+        [Route("api/Guests/{id}/StayHistory")]
+        public IHttpActionResult GetStayHistory(int id)
+        {
+            Guest guest = dc.Guests.FirstOrDefault(g => g.GuestId == id);
+
+            if (guest == null)
+            {
+                return ResponseMessage(
+                    Request.CreateResponse(
+                        HttpStatusCode.NotFound,
+                        "Guest not found."));
+            }
+
+            // Get guest's completed reservations and combine them with room info
+            // "Go through Reservations table, and for each row, temporarily call that row reservation"
+            var history = from reservation in dc.Reservations
+
+                          // Join Reservations with Rooms to access the room number
+                          join room in dc.Rooms
+                          on reservation.RoomId equals room.RoomId
+
+                          // Only get guest's past stays (completed reservations)
+                          where reservation.GuestId == id
+                          && reservation.ReservationStatus == "Checked_Out"
+
+                          // Create a simplified object to send to the WPF client
+                          select new StayHistoryViewModel
+                          {
+                              ReservationId = reservation.ReservationId,
+
+                              // Get room number from the joined Rooms table
+                              RoomNumber = room.RoomNumber,
+
+                              CheckInDate = reservation.CheckInDate,
+                              CheckOutDate = reservation.CheckOutDate,
+
+                              // Calculate how many nights the guest stayed
+                              Nights = (reservation.CheckOutDate -
+                                        reservation.CheckInDate).Days,
+                          };
+            return Ok(history.ToList()); // convert to list of StayHistoryViewModel and return as JSON
         }
 
         // POST api/guests
@@ -116,6 +160,20 @@ namespace HotelManagement.API.Controllers
 
             if (guest != null) // guest requested to delete exists, so delete it
             {
+
+                // Check if guest has active reservations
+                var activeReservation = dc.Reservations
+                    .FirstOrDefault(r => r.GuestId == id &&
+                        (r.ReservationStatus == "Reserved" ||
+                         r.ReservationStatus == "Checked_In"));
+
+                if (activeReservation != null)
+                {
+                    return BadRequest(
+                        "Guest cannot be deleted because they have an active reservation.");
+                }
+
+                // No active reservations, so delete guest
                 dc.Guests.DeleteOnSubmit(guest);
 
                 try

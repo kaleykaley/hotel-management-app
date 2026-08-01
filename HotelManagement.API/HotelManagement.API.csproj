@@ -185,6 +185,7 @@
     <Compile Include="Models\InvoiceViewModel.cs" />
     <Compile Include="Models\ReservationExtraServiceViewModel.cs" />
     <Compile Include="Models\ReservationViewModel.cs" />
+    <Compile Include="Models\StayHistoryViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

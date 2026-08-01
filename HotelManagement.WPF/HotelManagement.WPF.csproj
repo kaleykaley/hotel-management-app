@@ -71,8 +71,9 @@
     <Compile Include="Data\Entities\Invoice.cs" />
     <Compile Include="Data\Entities\Payment.cs" />
     <Compile Include="Data\Entities\Reservation.cs" />
-    <Compile Include="Data\Entities\ReservationExtraService.cs" />
+    <Compile Include="Data\ViewModels\ReservationExtraService.cs" />
     <Compile Include="Data\Entities\Room.cs" />
+    <Compile Include="Data\ViewModels\StayHistory.cs" />
     <Compile Include="Views\CheckInOutPage.xaml.cs">
       <DependentUpon>CheckInOutPage.xaml</DependentUpon>
     </Compile>
@@ -105,6 +106,9 @@
     </Compile>
     <Compile Include="Windows\RoomWindow.xaml.cs">
       <DependentUpon>RoomWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\StayHistoryWindow.xaml.cs">
+      <DependentUpon>StayHistoryWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -159,6 +163,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\RoomWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\StayHistoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

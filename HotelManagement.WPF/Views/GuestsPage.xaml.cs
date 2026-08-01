@@ -55,14 +55,13 @@ namespace HotelManagement.WPF.Views
         }
 
         private void AddGuest_Click(object sender, RoutedEventArgs e)
-        {
-            // Create a new RoomWindow to add new room info
+        {       
+            // Create a new Guestindow to add new guest info
             GuestWindow window = new GuestWindow();
 
             window.Show();
 
             window.Closed += GuestWindow_Closed; // when this window closes, run GuestWindow_Closed method to reload guests
-
         }
 
         private void Edit_Click(object sender, RoutedEventArgs e)
@@ -125,7 +124,20 @@ namespace HotelManagement.WPF.Views
 
         private void StayHistory_Click(object sender, RoutedEventArgs e)
         {
+            // as Guest: "Try to convert this to a Guest. If it works, give me the Guest.
+            // If not, give me null."
+            // Get the reservation selected by the user in the DataGrid
+            Guest selectedGuest = dgGuests.SelectedItem as Guest;
 
+            if (selectedGuest == null)
+            {
+                MessageBox.Show("Please select a guest first to view their stay history.");
+                return;
+            }
+            // Create a new StayHistoryWindow; pass the selected guest to view their stay history
+            StayHistoryWindow window = new StayHistoryWindow(selectedGuest);
+
+            window.Show();
         }
 
         // to refresh list of guests after adding or editing a guest

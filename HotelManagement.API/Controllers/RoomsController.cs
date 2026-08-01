@@ -119,12 +119,15 @@ namespace HotelManagement.API.Controllers
 
             if (room != null) // Room requested to delete exists, so delete it
             {
-                if (room.Reservations.Any()) // check if room has reservations
+                // Check if room has active/future reservations
+                if (room.Reservations.Any(r =>
+                    r.ReservationStatus == "Reserved" ||
+                    r.ReservationStatus == "Checked_In"))
                 {
                     return ResponseMessage(
                         Request.CreateResponse(
                             HttpStatusCode.Conflict,
-                            "Cannot delete a room with reservations."));
+                            "Cannot delete a room with active or future reservations."));
                 }
 
                 dc.Rooms.DeleteOnSubmit(room);
