@@ -177,7 +177,7 @@
                        FontSize="12"
                        HorizontalAlignment="Center"/>
 
-                    <TextBlock Text="Author Name"
+                    <TextBlock Text="Administrator: Kaley Scott"
                        Foreground="White"
                        FontSize="12"
                        HorizontalAlignment="Center"/>

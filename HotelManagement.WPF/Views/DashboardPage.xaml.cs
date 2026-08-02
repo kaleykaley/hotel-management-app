@@ -41,11 +41,6 @@ namespace HotelManagement.WPF.Views
         {
             await LoadDashboard();
 
-            //await LoadGuestCount();
-            //await LoadAvailableRooms();
-            //await LoadTodayCheckIns();
-            //await LoadPendingInvoices();
-
         }
 
         private async Task LoadDashboard()
@@ -60,90 +55,14 @@ namespace HotelManagement.WPF.Views
                 txtAvailableRooms.Text = dashboard.AvailableRooms.ToString();
                 txtActiveReservations.Text = dashboard.ActiveReservations.ToString();
                 txtUnpaidInvoices.Text = dashboard.UnpaidInvoices.ToString();
+
+                lbActivities.ItemsSource = dashboard.Activities;
             }
             else
             {
                 MessageBox.Show("Error loading dashboard.");
             }
         }
-
-        /*
-        private async Task LoadPendingInvoices()
-        {
-            HttpResponseMessage response = await client.GetAsync("api/Invoices");
-
-            if (response.IsSuccessStatusCode)
-            {
-                // make a new GET for just available rooms?
-                List<Invoice> invoices = await response.Content.ReadAsAsync<List<Invoice>>();
-
-                int pendingInvoices = invoices.Count(i => i.InvoiceStatus == "Unpaid");
-
-                txtPendingInvoices.Text = pendingInvoices.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Error loading invoices.");
-            }
-        }
-
-        /*private async Task LoadTodayCheckIns()
-        {
-            HttpResponseMessage response = await client.GetAsync("api/Reservations");
-
-            if (response.IsSuccessStatusCode)
-            {
-                // make a new GET for just today checked-in reservations?
-                List<Reservation> reservations = await response.Content.ReadAsAsync<List<Reservation>>();
-
-                // display reserversation that were checked in today nicely or just count? 
-            }
-            else
-            {
-                MessageBox.Show("Error loading invoices.");
-            }
-        }
-
-
-
-        private async Task LoadGuestCount()
-        {
-            // the HTTP response (200, 404, etc) is stored in the variable response
-            HttpResponseMessage response = await client.GetAsync("api/Guests");
-
-            // successfull connection to api, continue to reques json
-            if (response.IsSuccessStatusCode)
-            {
-                // JSON (from API) is inside response.Content
-                // converts json to List of Guests
-                List<Guest> guests = await response.Content.ReadAsAsync<List<Guest>>();
-
-                txtTotalGuests.Text = guests.Count.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Error loading guests.");
-            }
-        }
-
-        private async Task LoadAvailableRooms()
-        {
-            HttpResponseMessage response = await client.GetAsync("api/Rooms");
-
-            if (response.IsSuccessStatusCode)
-            {
-                // make a new GET for just available rooms?
-                List<Room> rooms = await response.Content.ReadAsAsync<List<Room>>();
-
-                int availableRooms = rooms.Count(r => r.RoomStatus == "Available");
-
-                txtAvailableRooms.Text = availableRooms.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Error loading rooms.");
-            }
-        }*/
 
         private void Timer_Tick(object sender, EventArgs e)
         {

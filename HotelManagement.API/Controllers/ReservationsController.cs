@@ -373,32 +373,8 @@ namespace HotelManagement.API.Controllers
         }
 
 
-        // DELETE api/Reservations/5
-        // Added a route so this method is called when URL contains a ReservationId
-        //[Route("api/Reservations/{ReservationId}")]
-        public IHttpActionResult Delete(int id)
-        {
-            Reservation reservation = dc.Reservations.FirstOrDefault(r => r.ReservationId == id);
+        // DELETE api/Reservations/5 - not needed, as we can just cancel a reservation while preserving historical data
 
-            if (reservation != null) // Reservation requested to delete exists, so delete it
-            {
-                dc.Reservations.DeleteOnSubmit(reservation);
-
-                try
-                {
-                    dc.SubmitChanges(); // commit updates to db
-                }
-                catch (Exception e)
-                {
-                    return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
-                }
-                // if it arrives here, correu tudo bem
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
-            }
-            // Reservation requested to delete doesn't exist, so display error
-            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
-                "There is no Reservation with this ID to delete."));
-        }
 
         private string ValidateReservation(ReservationViewModel reservation)
         {

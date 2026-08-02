@@ -131,6 +131,14 @@
         <DataGrid x:Name="dgStayHistory"
                   Grid.Row="2"
                   Margin="5,20,5,20"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeRows="False"
+                  CanUserSortColumns="False"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
                   AutoGenerateColumns="False"
                   Background="White"
                   BorderThickness="0"
@@ -152,8 +160,6 @@
                 </Style>
 
             </DataGrid.CellStyle>
-
-
 
             <DataGrid.Columns>
 

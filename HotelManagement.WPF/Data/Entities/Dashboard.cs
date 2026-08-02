@@ -15,5 +15,7 @@ namespace HotelManagement.WPF.Data.Entities
         public int ActiveReservations { get; set; }
 
         public int UnpaidInvoices { get; set; }
+
+        public List<string> Activities { get; set; }
     }
 }

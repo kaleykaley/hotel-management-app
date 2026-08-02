@@ -15,6 +15,9 @@ namespace HotelManagement.API
 
         public int UnpaidInvoices { get; set; }
 
-        public int TodayCheckIns { get; set; }   // Add later if you want
+        public int TodayCheckIns { get; set; }  
+
+        public List<string> Activities { get; set; }
+
     }
 }

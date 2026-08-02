@@ -174,7 +174,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Today's Activity -->
+            <!-- Recent Activity -->
             <Border Grid.Column="0"
                     Background="White"
                     CornerRadius="12"
@@ -183,24 +183,16 @@
 
                 <StackPanel>
 
-                    <TextBlock Text="Today's Activity"
+                    <TextBlock Text="Recent Activity"
                                FontSize="18"
                                FontWeight="SemiBold"
                                Foreground="#2F5597"/>
 
                     <Separator Margin="0,10"/>
 
-                    <TextBlock Text="✓ Room 204 checked in"
-                               Margin="0,5"/>
-
-                    <TextBlock Text="✓ Reservation #105 created"
-                               Margin="0,5"/>
-
-                    <TextBlock Text="✓ Invoice #301 paid"
-                               Margin="0,5"/>
-
-                    <TextBlock Text="✓ Room 305 checked out"
-                               Margin="0,5"/>
+                    <ListBox x:Name="lbActivities"
+                             BorderThickness="0"
+                             FontSize="12"/>
 
                 </StackPanel>
 

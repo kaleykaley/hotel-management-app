@@ -112,6 +112,19 @@ namespace HotelManagement.WPF.Views
 
         private void Search_Click(object sender, RoutedEventArgs e)
         {
+            // Validate date range
+            if (dpCheckIn.SelectedDate != null && dpCheckOut.SelectedDate != null)
+            {
+                DateTime checkIn = dpCheckIn.SelectedDate.Value;
+                DateTime checkOut = dpCheckOut.SelectedDate.Value;
+
+                if (checkOut < checkIn)
+                {
+                    MessageBox.Show("Check-out date cannot be before check-in date.");
+                    return;
+                }
+            }
+
             // Start with all reservations
             IEnumerable<Reservation> filtered = allReservations;
 
@@ -235,47 +248,6 @@ namespace HotelManagement.WPF.Views
                 string error = await response.Content.ReadAsStringAsync();
 
                 MessageBox.Show(error);
-            }
-        }
-
-        private async void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            Reservation selectedReservation =
-                dgReservations.SelectedItem as Reservation;
-
-
-            if (selectedReservation == null)
-            {
-                MessageBox.Show("Please select a reservation to delete.");
-                return;
-            }
-
-
-            MessageBoxResult result = MessageBox.Show(
-                "Are you sure you want to delete this reservation?",
-                "Confirm Delete",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.No)
-                return;
-
-            HttpResponseMessage response =
-                await client.DeleteAsync($"api/Reservations/{selectedReservation.ReservationId}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                MessageBox.Show("Reservation deleted successfully.");
-
-                ReservationsPage_Loaded(null, null);
-            }
-            else
-            {
-                string error =
-                    await response.Content.ReadAsStringAsync();
-
-                MessageBox.Show(error);
-           
             }
         }
 
