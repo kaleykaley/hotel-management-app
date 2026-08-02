@@ -17,8 +17,6 @@ namespace HotelManagement.WPF.Windows
 
         private Invoice invoice;
 
-        private List<Reservation> allReservations = new List<Reservation>(); // not needed?
-
         public InvoiceWindow()
         {
             InitializeComponent();
@@ -26,29 +24,17 @@ namespace HotelManagement.WPF.Windows
             dpIssueDate.SelectedDate = DateTime.Today;
             client.BaseAddress = new Uri("https://localhost:44380/");
 
-            LoadReservations();
+            LoadReservationsWithoutInvoice();
         }
 
-        private async void LoadReservations()
+        private async void LoadReservationsWithoutInvoice()
         {
-            HttpResponseMessage response = await client.GetAsync("api/Reservations");
+            HttpResponseMessage response = await client.GetAsync("api/Reservations/WithoutInvoice");
 
             if (response.IsSuccessStatusCode)
             {
                 // Convert JSON returned by the API into a list of Reservation objects
                 var reservations = await response.Content.ReadAsAsync<List<Reservation>>();
-
-                // FOR TESTING
-
-                foreach (var r in reservations)
-                {
-                    MessageBox.Show(
-                        r.DisplayName +
-                        "\nExtra services: " + r.ExtraServices.Count);
-                }
-
-                // Save complete original list received from the API
-                allReservations = reservations;
 
                 // Display all reservations initially in the combobox
                 cbReservations.ItemsSource = reservations;

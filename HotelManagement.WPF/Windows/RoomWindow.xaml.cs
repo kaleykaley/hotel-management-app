@@ -74,7 +74,7 @@ namespace HotelManagement.WPF.Windows
             }
 
             // Check if the room number already exists when adding a new room
-            if (!isEditMode)
+            /*if (!isEditMode)
             {
                 HttpResponseMessage check = await client.GetAsync("api/Rooms");
 
@@ -88,7 +88,7 @@ namespace HotelManagement.WPF.Windows
                         return;
                     }
                 }
-            }
+            }*/
 
             string message;
 
@@ -115,9 +115,7 @@ namespace HotelManagement.WPF.Windows
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show($"Room {room.RoomNumber} updated successfully.");
-
-                    // Reload rooms from API
-                    //RoomsPage_Loaded(null, null);
+                    this.Close();
                 }
                 else
                 {
@@ -132,7 +130,9 @@ namespace HotelManagement.WPF.Windows
 
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show($"Room {room.RoomNumber} added successfully."); ;
+                    MessageBox.Show($"Room {room.RoomNumber} added successfully.");
+                    this.Close();
+
                 }
                 else
                 {
@@ -141,7 +141,6 @@ namespace HotelManagement.WPF.Windows
                     MessageBox.Show($"Adding failed:\n{error}");
                 }
             }
-            this.Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

@@ -230,17 +230,17 @@
                     Binding="{Binding RoomNumber}"
                     Width="80"/>
 
-                            <DataGridTextColumn
+                                <DataGridTextColumn
                     Header="Check In"
-                    Binding="{Binding CheckInDate}"
+                    Binding="{Binding CheckInDate, StringFormat={}{0:dd/MM/yyyy}}"
                     Width="*"/>
 
-                            <DataGridTextColumn
+                                <DataGridTextColumn
                     Header="Check Out"
-                    Binding="{Binding CheckOutDate}"
+                    Binding="{Binding CheckOutDate, StringFormat={}{0:dd/MM/yyyy}}"
                     Width="*"/>
 
-                            <DataGridTextColumn
+                <DataGridTextColumn
                     Header="# of Guests"
                     Binding="{Binding NumberOfGuests}"
                     Width="*"/>
@@ -251,7 +251,6 @@
                     Width="*"/>
 
             </DataGrid.Columns>
-
 
         </DataGrid>
 

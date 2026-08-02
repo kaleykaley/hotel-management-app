@@ -102,9 +102,7 @@ namespace HotelManagement.WPF.Windows
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show($"Reservation {reservation.ReservationId} updated successfully.");
-
-                    // Reload reservations from API
-                    //ReservationsPage_Loaded(null, null);
+                    this.Close();
                 }
                 else
                 {
@@ -119,7 +117,8 @@ namespace HotelManagement.WPF.Windows
 
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show($"New reservation added successfully."); ;
+                    MessageBox.Show($"New reservation added successfully.");
+                    this.Close();
                 }
                 else
                 {
@@ -128,7 +127,6 @@ namespace HotelManagement.WPF.Windows
                     MessageBox.Show($"Adding failed:\n{error}");
                 }
             }
-            this.Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -305,6 +303,4 @@ namespace HotelManagement.WPF.Windows
             icExtraServices.Items.Refresh();
         }
     }
-
-
 }

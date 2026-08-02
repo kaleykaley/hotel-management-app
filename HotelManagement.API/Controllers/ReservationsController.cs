@@ -23,7 +23,6 @@ namespace HotelManagement.API.Controllers
             return listReservations.ToList(); // convert back to list from object var
         }*/
 
-        // TEMP CODE FOR TEST
         public IHttpActionResult Get()
         {
             var listReservations = dc.Reservations
@@ -111,6 +110,49 @@ namespace HotelManagement.API.Controllers
                 Request.CreateResponse(HttpStatusCode.NotFound, "Reservation not found."));
         }
 
+        // GET api/Reservations/WithoutInvoice
+        [HttpGet]
+        [Route("api/Reservations/WithoutInvoice")]
+        public IHttpActionResult GetWithoutInvoice()
+        {
+            var reservations = dc.Reservations
+                .Where(r => !dc.Invoices.Any(i =>
+                    i.ReservationId == r.ReservationId))
+                .Select(r => new ReservationViewModel
+                {
+                    ReservationId = r.ReservationId,
+
+                    GuestId = r.GuestId,
+                    RoomId = r.RoomId,
+
+                    GuestName = r.Guest.Name,
+
+                    RoomNumber = r.Room.RoomNumber,
+
+                    PricePerNight = r.Room.PricePerNight,
+
+                    CheckInDate = r.CheckInDate,
+
+                    CheckOutDate = r.CheckOutDate,
+
+                    NumberOfGuests = r.NumberOfGuests,
+
+                    ReservationStatus = r.ReservationStatus,
+
+                    ExtraServices = r.ReservationExtraServices
+                        .Select(s => new ReservationExtraServiceViewModel
+                        {
+                            ExtraServiceId = s.ExtraServiceId,
+                            ServiceName = s.ExtraService.Name,
+                            Price = s.ExtraService.Price,
+                            Quantity = s.Quantity
+                        })
+                        .ToList()
+                })
+                .ToList();
+
+            return Ok(reservations);
+        }
 
         // POST api/Reservations
         // Insert a Reservation, returns ihttp result

@@ -75,6 +75,12 @@ namespace HotelManagement.WPF.Views
                 return;
             }
 
+            if (selectedInvoice.InvoiceStatus == "Paid")
+            {
+                MessageBox.Show("This invoice is already paid.");
+                return;
+            }
+
             // Create a new PaymentWindow; pass the selected Invoice to edit
             PaymentWindow window = new PaymentWindow(selectedInvoice);
 

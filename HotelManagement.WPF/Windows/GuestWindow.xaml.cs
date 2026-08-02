@@ -83,6 +83,7 @@ namespace HotelManagement.WPF.Windows
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show($"Guest {guest.GuestId} updated successfully.");
+                    this.Close();
 
                     // Reload guests from API
                     //ReservationsPage_Loaded(null, null);
@@ -91,7 +92,7 @@ namespace HotelManagement.WPF.Windows
                 {
                     string error = await response.Content.ReadAsStringAsync();
 
-                    MessageBox.Show($"Update failed:\n{error}");
+                    MessageBox.Show(error);
                 }
             }
             else // is Add Mode
@@ -100,16 +101,16 @@ namespace HotelManagement.WPF.Windows
 
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show($"New guest added successfully."); ;
+                    MessageBox.Show($"New guest added successfully.");
+                    this.Close();
                 }
                 else
                 {
                     string error = await response.Content.ReadAsStringAsync();
 
-                    MessageBox.Show($"Adding failed:\n{error}");
+                    MessageBox.Show(error);
                 }
             }
-            this.Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

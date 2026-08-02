@@ -191,15 +191,14 @@ namespace HotelManagement.API.Controllers
             // check for already existing room number
             bool duplicateRoomNumber = dc.Rooms.Any(r =>
                  r.RoomNumber == room.RoomNumber &&
-                 r.RoomId != room.RoomId &&
-                 !r.IsDeleted); // ignores itself when editing
+                 r.RoomId != room.RoomId); // ignores itself when editing
 
             if (duplicateRoomNumber)
             {
-                return "A room with this number already exists.";
+                return "This room number was already used. Please choose another room number.";
             }
 
             return null;
-        }
+        }   
     }
 }
