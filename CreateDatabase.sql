@@ -88,3 +88,9 @@ CREATE TABLE ReservationExtraServices(
 	FOREIGN KEY (ReservationId) REFERENCES Reservations(ReservationId),
 	FOREIGN KEY (ExtraServiceId) REFERENCES ExtraServices(ExtraServiceId)
 );
+
+
+-- add soft delete to Rooms table
+ALTER TABLE Rooms
+ADD IsDeleted BIT NOT NULL
+CONSTRAINT DF_Rooms_IsDeleted DEFAULT 0;

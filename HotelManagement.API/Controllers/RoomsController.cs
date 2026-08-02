@@ -18,14 +18,18 @@ namespace HotelManagement.API.Controllers
         // retrieve entire list of rooms
         public List<Room> Get()
         {
-            var listRooms = from Room in dc.Rooms select Room;
+            // don't return "isDeleted" rooms, only active ones
+            var listRooms = from room in dc.Rooms
+                            where room.IsDeleted == false
+                            select room;
             return listRooms.ToList(); // convert back to list from object var
         }
 
         // GET api/Rooms/5
         public IHttpActionResult Get(int id)
         {
-            Room room = dc.Rooms.FirstOrDefault(r => r.RoomId == id);
+            // don't return "isDeleted" rooms, only active ones
+            Room room = dc.Rooms.FirstOrDefault(r =>r.RoomId == id && !r.IsDeleted);
 
             if (room != null)
             {
@@ -78,7 +82,8 @@ namespace HotelManagement.API.Controllers
                     Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
 
-            Room existingRoom = dc.Rooms.FirstOrDefault(r => r.RoomId == id);
+            // don't allow editing of a deleted room, only active ones
+            Room existingRoom = dc.Rooms.FirstOrDefault(r =>r.RoomId == id && !r.IsDeleted);
 
             if (existingRoom == null) // Room requested to change doesnt exist
             {
@@ -115,8 +120,9 @@ namespace HotelManagement.API.Controllers
             {
                 // Check if room has active/future reservations
                 if (room.Reservations.Any(r =>
-                    r.ReservationStatus == "Reserved" ||
-                    r.ReservationStatus == "Checked_In"))
+                    r.CheckOutDate >= DateTime.Today &&
+                    (r.ReservationStatus == "Reserved" ||
+                     r.ReservationStatus == "Checked_In")))
                 {
                     return ResponseMessage(
                         Request.CreateResponse(
@@ -124,7 +130,8 @@ namespace HotelManagement.API.Controllers
                             "Cannot delete a room with active or future reservations."));
                 }
 
-                dc.Rooms.DeleteOnSubmit(room);
+                // soft delete: mark the room as deleted instead of removing it from the database
+                room.IsDeleted = true;
 
                 try
                 {
@@ -184,7 +191,8 @@ namespace HotelManagement.API.Controllers
             // check for already existing room number
             bool duplicateRoomNumber = dc.Rooms.Any(r =>
                  r.RoomNumber == room.RoomNumber &&
-                 r.RoomId != room.RoomId); // ignores itself when editing
+                 r.RoomId != room.RoomId &&
+                 !r.IsDeleted); // ignores itself when editing
 
             if (duplicateRoomNumber)
             {

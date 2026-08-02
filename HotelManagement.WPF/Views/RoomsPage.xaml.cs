@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http; // microsoft's client for communicating with web services
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -35,23 +36,7 @@ namespace HotelManagement.WPF.Views
 
         private async void RoomsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            HttpResponseMessage response = await client.GetAsync("api/Rooms");
-
-            if (response.IsSuccessStatusCode)
-            {
-                // Convert JSON returned by the API into a list of Room objects
-                var rooms = await response.Content.ReadAsAsync<List<Room>>();
-
-                // Save complete original list received from the API
-                allRooms = rooms;
-
-                // Display all rooms initially in the DataGrid
-                dgRooms.ItemsSource = allRooms;
-            }
-            else
-            {
-                MessageBox.Show("Error loading rooms.");
-            }
+            await LoadRooms();
         }
 
         // implement filters through api?
@@ -86,7 +71,6 @@ namespace HotelManagement.WPF.Views
             // Display filtered results
             dgRooms.ItemsSource = filtered.ToList();
         }
-
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
@@ -136,9 +120,11 @@ namespace HotelManagement.WPF.Views
         }
 
         // to refresh list of rooms after adding or editing a room
-        private void RoomWindow_Closed(object sender, EventArgs e)
+        private async void RoomWindow_Closed(object sender, EventArgs e)
         {
-            RoomsPage_Loaded(null, null);
+            await LoadRooms();
+
+            //RoomsPage_Loaded(null, null);
         }
 
         // async because it must wait for the server (API) to respond
@@ -173,15 +159,37 @@ namespace HotelManagement.WPF.Views
                 MessageBox.Show($"Room {selectedRoom.RoomNumber} deleted successfully.");
 
                 // Reload rooms from API
-                RoomsPage_Loaded(null, null);
+                await LoadRooms();
+                //RoomsPage_Loaded(null, null);
             }
             else
             {
                 string error = await response.Content.ReadAsStringAsync();
 
-                MessageBox.Show($"Delete failed:\n{error}");
+                MessageBox.Show(error);
             }
         }
+
+        /// <summary>
+        /// Reloads the list of rooms from the API and updates the DataGrid
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadRooms()
+        {
+            HttpResponseMessage response = await client.GetAsync("api/Rooms");
+
+            if (response.IsSuccessStatusCode)
+            {
+                allRooms = await response.Content.ReadAsAsync<List<Room>>();
+                dgRooms.ItemsSource = allRooms;
+            }
+            else
+            {
+                MessageBox.Show("Error loading rooms.");
+            }
+        }
+
+
 
         private bool ValidatePriceFilters(out decimal minPrice, out decimal maxPrice)
         {
