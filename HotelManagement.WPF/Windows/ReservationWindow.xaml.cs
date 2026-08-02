@@ -54,7 +54,6 @@ namespace HotelManagement.WPF.Windows
             Loaded += ReservationWindow_Loaded;
         }
 
-
         private void LoadReservationData()
         {
             cbGuests.SelectedValue = reservation.GuestId;
@@ -174,6 +173,12 @@ namespace HotelManagement.WPF.Windows
                 return false;
             }
 
+            if (reservation.CheckInDate.Date < DateTime.Today)
+            {
+                MessageBox.Show("Check-in date cannot be in the past.");
+                return false;
+            }
+
             int numberOfGuests;
 
             if (int.TryParse(txtNumberOfGuests.Text, out numberOfGuests))
@@ -242,10 +247,24 @@ namespace HotelManagement.WPF.Windows
             {
                 rooms = await response.Content.ReadAsAsync<List<Room>>();
 
+                if (rooms == null)
+                {
+                    MessageBox.Show("No rooms returned from API.");
+                    return;
+                }
+
+                // Filter unavailable rooms only when creating a reservation
+                if (!isEditMode)
+                {
+                    rooms = rooms
+                        .Where(r => r.RoomStatus != "Maintenance" &&
+                                    r.RoomStatus != "Occupied")
+                        .ToList();
+                }
+
                 cbRooms.ItemsSource = rooms;
 
                 cbRooms.DisplayMemberPath = "RoomNumber";
-
                 cbRooms.SelectedValuePath = "RoomId";
             }
             else

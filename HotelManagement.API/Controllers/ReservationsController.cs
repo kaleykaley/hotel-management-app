@@ -327,6 +327,52 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
+        // PUT api/Reservations/5/Cancel
+        [HttpPut]
+        [Route("api/Reservations/{id}/Cancel")]
+        public IHttpActionResult Cancel(int id)
+        {
+            Reservation reservation = dc.Reservations
+                .FirstOrDefault(r => r.ReservationId == id);
+
+            if (reservation == null)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Reservation not found."));
+            }
+
+            // Cannot cancel after check-in
+            if (reservation.ReservationStatus == "Checked_In")
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, "A reservation that has already checked in cannot be cancelled."));
+            }
+
+            // Cannot cancel already finished reservations
+            if (reservation.ReservationStatus == "Checked_Out")
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, "A completed reservation cannot be cancelled."));
+            }
+
+            // Cannot cancel after check-in date
+            if (reservation.CheckInDate <= DateTime.Today)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, "A reservation can only be cancelled before the check-in date."));
+            }
+
+            reservation.ReservationStatus = "Cancelled";
+
+            try
+            {
+                dc.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
+            }
+
+            return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
+        }
+
+
         // DELETE api/Reservations/5
         // Added a route so this method is called when URL contains a ReservationId
         //[Route("api/Reservations/{ReservationId}")]
@@ -384,6 +430,16 @@ namespace HotelManagement.API.Controllers
             if (reservation.CheckOutDate <= reservation.CheckInDate)
             {
                 return "Checkout date must be after check-in date.";
+            }
+
+            if (reservation.CheckInDate.Date < DateTime.Today)
+            {
+                return "Check-in date cannot be in the past.";
+            }
+
+            if (reservation.CheckOutDate.Date < DateTime.Today)
+            {
+                return "Check-out date cannot be in the past.";
             }
 
             if (reservation.NumberOfGuests > room.Capacity)

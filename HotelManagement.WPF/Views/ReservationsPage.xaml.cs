@@ -174,6 +174,12 @@ namespace HotelManagement.WPF.Views
                 MessageBox.Show("Please select a reservation to edit.");
                 return;
             }
+
+            if (selectedReservation.ReservationStatus == "Cancelled")
+            {
+                MessageBox.Show("Cancelled reservations cannot be edited.");
+                return;
+            }
             // Create a new ReservationWindow; pass the selected reservation to edit
             ReservationWindow window = new ReservationWindow(selectedReservation);
 
@@ -187,9 +193,49 @@ namespace HotelManagement.WPF.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+        private async void Cancel_Click(object sender, RoutedEventArgs e)
         {
+            Reservation selectedReservation = dgReservations.SelectedItem as Reservation;
 
+            if (selectedReservation == null)
+            {
+                MessageBox.Show("Please select a reservation to cancel.");
+                return;
+            }
+
+            if (selectedReservation.ReservationStatus == "Cancelled")
+            {
+                MessageBox.Show("This reservation is already cancelled.");
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show(
+                "Are you sure you want to cancel this reservation?",
+                "Confirm Cancellation",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            HttpResponseMessage response =
+                await client.PutAsync($"api/Reservations/{selectedReservation.ReservationId}/Cancel", null);
+
+
+            if (response.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Reservation cancelled successfully.");
+
+                ReservationsPage_Loaded(null, null);
+            }
+            else
+            {
+                string error = await response.Content.ReadAsStringAsync();
+
+                MessageBox.Show(error);
+            }
         }
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
