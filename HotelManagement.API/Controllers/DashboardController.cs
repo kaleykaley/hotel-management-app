@@ -55,14 +55,15 @@ namespace HotelManagement.API.Controllers
             {
                 TotalGuests = dc.Guests.Count(),
 
-                AvailableRooms = dc.Rooms.Count(r => r.RoomStatus == "Available"),
+                AvailableRooms = dc.Rooms.Count(r => r.RoomStatus == "Available" && !r.IsDeleted),
 
                 ActiveReservations = dc.Reservations.Count(r => r.ReservationStatus == "Reserved" ||
                     r.ReservationStatus == "Checked_In"),
 
                 UnpaidInvoices = dc.Invoices.Count(i => i.InvoiceStatus == "Unpaid"),
 
-                TodayCheckIns = dc.Reservations.Count(r => r.CheckInDate.Date == DateTime.Today),
+                TodayCheckIns = dc.Reservations.Count(r => r.CheckInDate.Date == DateTime.Today &&
+                    r.ReservationStatus != "Cancelled"),
 
                 Activities = activities.Take(10).ToList()
             };

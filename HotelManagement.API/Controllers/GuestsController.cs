@@ -205,17 +205,17 @@ namespace HotelManagement.API.Controllers
 
             if (guest != null) // guest requested to delete exists, so delete it
             {
-                // Check if guest has active reservations
-                var activeReservation = dc.Reservations.FirstOrDefault(r => r.GuestId == id &&
-                        (r.ReservationStatus == "Reserved" ||
-                         r.ReservationStatus == "Checked_In"));
+                // Check if guest has any reservation history
+                var reservation = dc.Reservations.FirstOrDefault(r => r.GuestId == id);
 
-                if (activeReservation != null)
+                if (reservation != null)
                 {
-                    return BadRequest("Guest cannot be deleted because they have an active reservation.");
+                    return ResponseMessage(Request.CreateResponse(
+                        HttpStatusCode.Conflict,
+                        "Guest cannot be deleted because they have reservation history."));
                 }
 
-                // No active reservations, so delete guest
+                // No reservation history, so delete guest
                 dc.Guests.DeleteOnSubmit(guest);
 
                 try
@@ -227,11 +227,13 @@ namespace HotelManagement.API.Controllers
                     return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
                 }
 
+                // Guest deleted successfully
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
             }
+
             // guest requested to delete doesn't exist, so display error
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
-                "There is no guest with this ID to delete."));
+                "There is no Guest with this ID to delete."));
         }
 
         /// <summary>
