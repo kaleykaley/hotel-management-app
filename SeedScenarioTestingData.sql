@@ -218,7 +218,7 @@ INSERT INTO Payments
 VALUES
 (
     'Credit_Card',
-    520.00,
+    505.00,
     '2026-07-04',
     1
 );
