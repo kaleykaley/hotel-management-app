@@ -78,6 +78,8 @@ CREATE TABLE ExtraServices(
 	Price DECIMAL(10,2) NOT NULL
 );
 
+-- A reservation can have many extra services,
+-- and an extra service can belong to many reservations.
 CREATE TABLE ReservationExtraServices(
 	ReservationId INT NOT NULL,
 	ExtraServiceId INT NOT NULL,

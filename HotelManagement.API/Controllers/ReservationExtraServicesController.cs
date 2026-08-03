@@ -8,11 +8,9 @@ using System.Web.Http;
 
 namespace HotelManagement.API.Controllers
 {
-    // DELETE THIS CONTROLLER?
     public class ReservationExtraServicesController : ApiController
     {
-        private readonly HotelDataDataContext dc =
-            new HotelDataDataContext(
+        private readonly HotelDataDataContext dc = new HotelDataDataContext(
                 ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
 
@@ -20,11 +18,12 @@ namespace HotelManagement.API.Controllers
         // retrieve entire list of categories
         public List<ReservationExtraService> Get()
         {
+            // Returns the rows from table linking reservations to extra services + quantity
             var listReservationExtraServiceExtraServices = from ReservationExtraService in dc.ReservationExtraServices select ReservationExtraService;
             return listReservationExtraServiceExtraServices.ToList(); // convert back to list from object var
         }
 
-        // NEED BOTH IDS BECAUSE PRIMARY KEY IS MADE OR 2 FOREIGN KEEYS
+        // Need both IDs because the primary key is a composite key of ReservationId and ExtraServiceId
         // GET api/ReservationExtraServiceExtraServices/5/2
         public IHttpActionResult Get(int reservationId, int extraServiceId)
         {
@@ -36,10 +35,7 @@ namespace HotelManagement.API.Controllers
                 return Ok(item);
             }
 
-            return ResponseMessage(
-                Request.CreateResponse(
-                    HttpStatusCode.NotFound,
-                    "Reservation extra service not found."));
+            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Reservation extra service not found."));
         }
 
         // POST api/ReservationExtraServiceExtraServices
@@ -53,7 +49,7 @@ namespace HotelManagement.API.Controllers
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
 
-            // category doesn't exist yet, so add it
+            // association doesn't exist yet, so add it
             dc.ReservationExtraServices.InsertOnSubmit(newReservationExtraService);
 
             try
@@ -70,8 +66,6 @@ namespace HotelManagement.API.Controllers
 
         // DELETE api/ReservationExtraServiceExtraServices/5
         // Added a route so this method is called when URL contains a ReservationExtraServiceId
-        //[Route("api/ReservationExtraServiceExtraServices/{ReservationExtraServiceId}")]
-        // DELETE api/ReservationExtraServices/{reservationId}/{extraServiceId}
         [Route("api/ReservationExtraServices/{reservationId}/{extraServiceId}")]
         public IHttpActionResult Delete(int reservationId, int extraServiceId)
         {
@@ -108,6 +102,11 @@ namespace HotelManagement.API.Controllers
                     "This extra service is not associated with this reservation."));
         }
 
+        /// <summary>
+        /// Validates the ReservationExtraService object before inserting into the database
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private string ValidateReservationExtraService(ReservationExtraService item)
         {
             var reservation = dc.Reservations

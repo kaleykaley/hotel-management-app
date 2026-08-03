@@ -10,12 +10,14 @@ namespace HotelManagement.API.Controllers
 {
     public class RoomsController : ApiController
     {
-        private readonly HotelDataDataContext dc =
-               new HotelDataDataContext(
+        private readonly HotelDataDataContext dc = new HotelDataDataContext(
                    ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
+        /// <summary>
+        /// Returns a list of all active rooms in the database (not deleted)
+        /// </summary>
+        /// <returns>List of Rooms</returns>
         // GET api/Rooms
-        // retrieve entire list of rooms
         public List<Room> Get()
         {
             // don't return "isDeleted" rooms, only active ones
@@ -25,6 +27,11 @@ namespace HotelManagement.API.Controllers
             return listRooms.ToList(); // convert back to list from object var
         }
 
+        /// <summary>
+        /// Returns a specific Room by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Room or error message</returns>
         // GET api/Rooms/5
         public IHttpActionResult Get(int id)
         {
@@ -40,9 +47,12 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Room not found."));
         }
 
-
+        /// <summary>
+        /// Inserts a new Room into the database
+        /// </summary>
+        /// <param name="newRoom"></param>
+        /// <returns>HTTP response</returns>
         // POST api/Rooms
-        // Insert a Room, returns ihttp result
         public IHttpActionResult Post([FromBody] Room newRoom)
         {
             string error = ValidateRoom(newRoom);
@@ -54,6 +64,7 @@ namespace HotelManagement.API.Controllers
             }
 
             newRoom.RoomStatus = "Available";
+            newRoom.IsDeleted = false;
 
             // room doesn't exist yet, so add it
             dc.Rooms.InsertOnSubmit(newRoom);
@@ -66,11 +77,16 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
+
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-        // PUT: like update from CRUD
+        /// <summary>
+        /// Edits an existing Room in the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="editedRoom"></param>
+        /// <returns>HTTP response</returns>
         // PUT api/Rooms/5
         public IHttpActionResult Put(int id, [FromBody] Room editedRoom)
         {
@@ -105,16 +121,20 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
+
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
+        /// <summary>
+        /// Deletes a Room from the database (soft delete)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
         // DELETE api/Rooms/5
-        // Added a route so this method is called when URL contains a RoomId
-        //[Route("api/Rooms/{RoomId}")]
         public IHttpActionResult Delete(int id)
         {
-            Room room = dc.Rooms.FirstOrDefault(g => g.RoomId == id);
+            // don't allow deletion of a deleted room, only active ones
+            Room room = dc.Rooms.FirstOrDefault(r => r.RoomId == id && !r.IsDeleted);
 
             if (room != null) // Room requested to delete exists, so delete it
             {
@@ -141,7 +161,7 @@ namespace HotelManagement.API.Controllers
                 {
                     return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
                 }
-                // if it arrives here, correu tudo bem
+                // Room deleted successfully
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
             }
 
@@ -150,7 +170,11 @@ namespace HotelManagement.API.Controllers
                 "There is no Room with this ID to delete."));
         }
 
-
+        /// <summary>
+        /// Validates the Room object for required fields and constraints
+        /// </summary>
+        /// <param name="room"></param>
+        /// <returns>Error message or null if valid</returns>
         private string ValidateRoom(Room room)
         {
             if (room == null)

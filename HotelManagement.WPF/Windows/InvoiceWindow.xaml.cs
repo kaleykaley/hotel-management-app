@@ -27,6 +27,9 @@ namespace HotelManagement.WPF.Windows
             LoadReservationsWithoutInvoice();
         }
 
+        /// <summary>
+        /// Populates combobox with reservations that do not have an invoice
+        /// </summary>
         private async void LoadReservationsWithoutInvoice()
         {
             HttpResponseMessage response = await client.GetAsync("api/Reservations/WithoutInvoice");
@@ -47,11 +50,21 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Closes the window without saving any changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
+        /// <summary>
+        /// Generates a new invoice for the selected reservation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void GenerateInvoice_Click(object sender, RoutedEventArgs e)
         {
             if (!GetInvoiceDataFromForm())
@@ -87,8 +100,10 @@ namespace HotelManagement.WPF.Windows
             this.Close();
         }
 
-
-        // Helper to build invoice object from the form
+        /// <summary>
+        /// Populates the invoice object with data from the form fields
+        /// </summary>
+        /// <returns>True if the data is valid, false otherwise</returns>
         private bool GetInvoiceDataFromForm()
         {
             invoice = new Invoice();
@@ -115,7 +130,11 @@ namespace HotelManagement.WPF.Windows
             return true;
         }
 
-        // auto-fill form fields when a reservation is selected
+        /// <summary>
+        /// Auto-fills the form fields when a reservation is selected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbReservations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Reservation selectedReservation = cbReservations.SelectedItem as Reservation;

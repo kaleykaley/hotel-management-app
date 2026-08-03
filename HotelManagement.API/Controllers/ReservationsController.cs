@@ -10,41 +10,28 @@ namespace HotelManagement.API.Controllers
 {
     public class ReservationsController : ApiController
     {
-        private readonly HotelDataDataContext dc =
-            new HotelDataDataContext(
-                ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
+        private readonly HotelDataDataContext dc = new HotelDataDataContext(ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
 
+        /// <summary>
+        /// Retrieve all reservations, including extra services
+        /// </summary>
+        /// <returns>list of ReservationViewModel</returns>
         // GET api/Reservations
-        // retrieve entire list of reservations
-        /*public List<Reservation> Get()
-        {
-            var listReservations = from Reservation in dc.Reservations select Reservation;
-            return listReservations.ToList(); // convert back to list from object var
-        }*/
-
         public IHttpActionResult Get()
         {
             var listReservations = dc.Reservations
                 .Select(r => new ReservationViewModel
                 {
                     ReservationId = r.ReservationId,
-
                     GuestId = r.GuestId,
                     RoomId = r.RoomId,
-
                     GuestName = r.Guest.Name,
-
                     RoomNumber = r.Room.RoomNumber,
-
                     PricePerNight = r.Room.PricePerNight,
-
                     CheckInDate = r.CheckInDate,
-
                     CheckOutDate = r.CheckOutDate,
-
                     NumberOfGuests = r.NumberOfGuests,
-
                     ReservationStatus = r.ReservationStatus,
 
                     // add extra services to reservation view model
@@ -64,6 +51,11 @@ namespace HotelManagement.API.Controllers
             return Ok(listReservations);
         }
 
+        /// <summary>
+        /// Retrieve a specific reservation by ID, including extra services
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>ReservationViewModel</returns>
         // GET api/Reservations/5
         public IHttpActionResult Get(int id)
         {
@@ -110,33 +102,28 @@ namespace HotelManagement.API.Controllers
                 Request.CreateResponse(HttpStatusCode.NotFound, "Reservation not found."));
         }
 
+        /// <summary>
+        /// Retrieve all reservations that do not have an associated invoice
+        /// </summary>
+        /// <returns>List of ReservationViewModel</returns>
         // GET api/Reservations/WithoutInvoice
         [HttpGet]
         [Route("api/Reservations/WithoutInvoice")]
         public IHttpActionResult GetWithoutInvoice()
         {
             var reservations = dc.Reservations
-                .Where(r => !dc.Invoices.Any(i =>
-                    i.ReservationId == r.ReservationId))
+                .Where(r => !dc.Invoices.Any(i => i.ReservationId == r.ReservationId))
                 .Select(r => new ReservationViewModel
                 {
                     ReservationId = r.ReservationId,
-
                     GuestId = r.GuestId,
                     RoomId = r.RoomId,
-
                     GuestName = r.Guest.Name,
-
                     RoomNumber = r.Room.RoomNumber,
-
                     PricePerNight = r.Room.PricePerNight,
-
                     CheckInDate = r.CheckInDate,
-
                     CheckOutDate = r.CheckOutDate,
-
                     NumberOfGuests = r.NumberOfGuests,
-
                     ReservationStatus = r.ReservationStatus,
 
                     ExtraServices = r.ReservationExtraServices
@@ -154,8 +141,12 @@ namespace HotelManagement.API.Controllers
             return Ok(reservations);
         }
 
+        /// <summary>
+        /// Insert a new reservation into the database
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>HTTP response</returns>
         // POST api/Reservations
-        // Insert a Reservation, returns ihttp result
         public IHttpActionResult Post([FromBody] ReservationViewModel model)
         {
             string error = ValidateReservation(model);
@@ -195,12 +186,15 @@ namespace HotelManagement.API.Controllers
 
             dc.SubmitChanges();
 
-            // if it arrives here, correu tudo bem
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-        // PUT: like update from CRUD
-
+        /// <summary>
+        /// Update an existing reservation by ID. Replace all existing extra services with the new list provided in the model.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>HTTP response</returns>
         // PUT api/Reservations/5
         public IHttpActionResult Put(int id, [FromBody] ReservationViewModel model)
         {
@@ -210,7 +204,7 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
-            // delete same ID check?
+            
             Reservation existingReservation = dc.Reservations.FirstOrDefault(r => r.ReservationId == id);
 
             if (existingReservation == null) // Reservation requested to change doesnt exist
@@ -254,11 +248,15 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
+
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-
+        /// <summary>
+        /// Check in a reservation by ID. A reservation can only be checked in if it is currently reserved and the check-in date is today or earlier
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
         // PUT CheckIn api/Reservations/5/CheckIn
         [HttpPut]
         [Route("api/Reservations/{id}/CheckIn")]
@@ -278,6 +276,13 @@ namespace HotelManagement.API.Controllers
                     "This reservation is not in a state that allows check-in."));
             }
 
+            // Check-in cannot happen before the scheduled check-in date
+            if (reservation.CheckInDate.Date > DateTime.Today)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest,
+                    "Check-in is only possible on or after the reservation check-in date."));
+            }
+
             reservation.ReservationStatus = "Checked_In";
             reservation.Room.RoomStatus = "Occupied"; // room is now occupied
 
@@ -293,6 +298,11 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
+        /// <summary>
+        /// Check out a reservation by ID. A reservation can only be checked out if it is currently checked in
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
         // PUT CheckOut api/Reservations/5/CheckOut
         [HttpPut]
         [Route("api/Reservations/{id}/CheckOut")]
@@ -327,6 +337,11 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
+        /// <summary>
+        /// Cancel a reservation by ID. A reservation can only be cancelled if it has not yet checked in and the check-in date is in the future
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
         // PUT api/Reservations/5/Cancel
         [HttpPut]
         [Route("api/Reservations/{id}/Cancel")]
@@ -372,10 +387,11 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-
-        // DELETE api/Reservations/5 - not needed, as we can just cancel a reservation while preserving historical data
-
-
+        /// <summary>
+        /// Validates a reservation model before inserting or updating it in the database
+        /// </summary>
+        /// <param name="reservation"></param>
+        /// <returns>error message if invalid, or null if valid.</returns>
         private string ValidateReservation(ReservationViewModel reservation)
         {
             if (reservation == null)
@@ -393,6 +409,11 @@ namespace HotelManagement.API.Controllers
             var room = dc.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
 
             if (room == null)
+            {
+                return "Room does not exist.";
+            }
+
+            if (room.IsDeleted)
             {
                 return "Room does not exist.";
             }

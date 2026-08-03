@@ -39,7 +39,9 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
-        // Load the data of the guest being edited into the input fields
+        /// <summary>
+        /// Loads the data of the guest being edited into the input fields
+        /// </summary>
         private void LoadGuestData()
         {
             txtGuestName.Text = guest.Name;
@@ -49,6 +51,11 @@ namespace HotelManagement.WPF.Windows
             txtDocumentNumber.Text = guest.DocumentNumber;
         }
 
+        /// <summary>
+        /// Adds a new guest or update an existing guest to the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
             if (!GetGuestDataFromForm())
@@ -113,6 +120,11 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Closes the window without saving any changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
