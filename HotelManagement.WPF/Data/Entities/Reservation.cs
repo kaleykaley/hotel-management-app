@@ -9,8 +9,6 @@ namespace HotelManagement.WPF.Data.Entities
     public class Reservation
     {
 
-        // breakfast 20, spa 50, room service 25, parking 10
-
         public int ReservationId { get; set; }
 
         public int GuestId { get; set; }
@@ -20,8 +18,8 @@ namespace HotelManagement.WPF.Data.Entities
         public int RoomId { get; set; }
         public int RoomNumber { get; set; }
 
-        public decimal PricePerNight { get; set; } // display property, not stored in the database
-
+        // Display property, not stored in the database
+        public decimal PricePerNight { get; set; } 
 
         public DateTime CheckInDate { get; set; }
 
@@ -34,8 +32,7 @@ namespace HotelManagement.WPF.Data.Entities
 
         public List<ReservationExtraService> ExtraServices { get; set; } = new List<ReservationExtraService>();
 
-        public int NumberOfNights =>
-            (CheckOutDate - CheckInDate).Days;
+        public int NumberOfNights => (CheckOutDate - CheckInDate).Days;
 
         public string DisplayName
         {

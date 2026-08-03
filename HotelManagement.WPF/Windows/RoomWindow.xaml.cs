@@ -18,12 +18,12 @@ namespace HotelManagement.WPF.Windows
         private HttpClient client = new HttpClient(); // bridge to API
 
 
-        // If no Room is passed when creating the window, automatically use null
+        // If no Room is provided, the window opens in Add mode
         public RoomWindow(Room selectedRoom = null)
         {
             InitializeComponent();
 
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
             room = selectedRoom;
 
@@ -56,7 +56,9 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
-        // Load the data of the room being edited into the input fields
+        /// <summary>
+        /// /// Loads the selected room data into the input fields
+        /// </summary>
         private void LoadRoomData()
         {
             txtRoomNumber.Text = room.RoomNumber.ToString();
@@ -66,29 +68,17 @@ namespace HotelManagement.WPF.Windows
             txtStatus.Text = room.RoomStatus;
         }
 
+        /// <summary>
+        /// Adds a new room or updates an existing room
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
             if (!GetRoomDataFromForm())
             {
                 return;
             }
-
-            // Check if the room number already exists when adding a new room
-            /*if (!isEditMode)
-            {
-                HttpResponseMessage check = await client.GetAsync("api/Rooms");
-
-                if (check.IsSuccessStatusCode)
-                {
-                    var rooms = await check.Content.ReadAsAsync<List<Room>>();
-
-                    if (rooms.Any(r => r.RoomNumber == room.RoomNumber))
-                    {
-                        MessageBox.Show("A room with this number already exists.");
-                        return;
-                    }
-                }
-            }*/
 
             string message;
 
@@ -143,12 +133,20 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Closes the window without saving changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        // helper to build room object from the form
+        /// <summary>
+        /// Builds a Room object from the form inputs
+        /// </summary>
+        /// <returns>True if valid, false otherwise</returns>
         private bool GetRoomDataFromForm()
         {
 
@@ -206,12 +204,22 @@ namespace HotelManagement.WPF.Windows
             return true;
         }
 
+        /// <summary>
+        /// Sets the room status to "Maintenance"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SetMaintenance_Click(object sender, RoutedEventArgs e)
         {
             room.RoomStatus = "Maintenance";
             txtStatus.Text = "Maintenance";
         }
 
+        /// <summary>
+        /// Sets the room status to "Available"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SetAvailable_Click(object sender, RoutedEventArgs e)
         {
             room.RoomStatus = "Available";

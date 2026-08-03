@@ -10,10 +10,13 @@ namespace HotelManagement.API.Controllers
 {
     public class DashboardController : ApiController
     {
-        private readonly HotelDataDataContext dc =
-            new HotelDataDataContext(
+        private readonly HotelDataDataContext dc = new HotelDataDataContext(
                 ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
+        /// <summary>
+        /// Retrieves dashboard statistics and recent activity 
+        /// </summary>
+        /// <returns>Dashboard data</returns>
         // GET api/Dashboard
         public IHttpActionResult Get()
         {
@@ -29,7 +32,6 @@ namespace HotelManagement.API.Controllers
 
             activities.AddRange(checkIns);
 
-
             // Recent check-outs
             var checkOuts = dc.Reservations
                 .Where(r => r.ReservationStatus == "Checked_Out")
@@ -40,7 +42,6 @@ namespace HotelManagement.API.Controllers
 
             activities.AddRange(checkOuts);
 
-
             // Recent payments
             var payments = dc.Payments
                 .OrderByDescending(p => p.PaymentDate)
@@ -50,27 +51,20 @@ namespace HotelManagement.API.Controllers
 
             activities.AddRange(payments);
 
-
             DashboardViewModel dashboard = new DashboardViewModel
             {
                 TotalGuests = dc.Guests.Count(),
 
-                AvailableRooms = dc.Rooms.Count(r =>
-                    r.RoomStatus == "Available"),
+                AvailableRooms = dc.Rooms.Count(r => r.RoomStatus == "Available"),
 
-                ActiveReservations = dc.Reservations.Count(r =>
-                    r.ReservationStatus == "Reserved" ||
+                ActiveReservations = dc.Reservations.Count(r => r.ReservationStatus == "Reserved" ||
                     r.ReservationStatus == "Checked_In"),
 
-                UnpaidInvoices = dc.Invoices.Count(i =>
-                    i.InvoiceStatus == "Unpaid"),
+                UnpaidInvoices = dc.Invoices.Count(i => i.InvoiceStatus == "Unpaid"),
 
-                TodayCheckIns = dc.Reservations.Count(r =>
-                    r.CheckInDate.Date == DateTime.Today),
+                TodayCheckIns = dc.Reservations.Count(r => r.CheckInDate.Date == DateTime.Today),
 
-                Activities = activities
-                    .Take(10)
-                    .ToList()
+                Activities = activities.Take(10).ToList()
             };
 
             return Ok(dashboard);

@@ -24,7 +24,7 @@ namespace HotelManagement.WPF.Views
         {
             InitializeComponent();
 
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
             Loaded += CheckInOutPage_Loaded;
         }

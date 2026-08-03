@@ -1,7 +1,6 @@
 ﻿using HotelManagement.WPF.Data.Entities;
 using System;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Windows;
 
 namespace HotelManagement.WPF.Windows
@@ -16,16 +15,16 @@ namespace HotelManagement.WPF.Windows
 
         private HttpClient client = new HttpClient(); // bridge to API
 
-        // If no guest is passed when creating the window, automatically use null
+        // If no guest is passed when creating the window, use null
         public GuestWindow(Guest selectedGuest = null)
         {
             InitializeComponent();
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
+
             guest = selectedGuest;
             if (guest != null)
             {
                 // EDIT MODE
-                guest = selectedGuest;
                 isEditMode = true;
                 txtTitle.Text = "Edit Guest";
                 LoadGuestData();
@@ -52,7 +51,7 @@ namespace HotelManagement.WPF.Windows
         }
 
         /// <summary>
-        /// Adds a new guest or update an existing guest to the database
+        /// Adds a new guest or update an existing guest
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -91,9 +90,6 @@ namespace HotelManagement.WPF.Windows
                 {
                     MessageBox.Show($"Guest {guest.GuestId} updated successfully.");
                     this.Close();
-
-                    // Reload guests from API
-                    //ReservationsPage_Loaded(null, null);
                 }
                 else
                 {
@@ -130,7 +126,10 @@ namespace HotelManagement.WPF.Windows
             this.Close();
         }
 
-        // helper to build guest object from the form
+        /// <summary>
+        /// Updates the guest object with data from the input fields
+        /// </summary>
+        /// <returns>True if the data is valid, otherwise false</returns>
         private bool GetGuestDataFromForm()
         {
             if (string.IsNullOrEmpty(txtGuestName.Text))
@@ -142,7 +141,6 @@ namespace HotelManagement.WPF.Windows
             guest.Name = txtGuestName.Text.Trim();
             guest.PhoneContact = txtPhoneContact.Text.Trim();
             guest.Email = txtEmail.Text.Trim();
-            // if user selects nothing, return null
             guest.DocumentType = cbDocumentType.Text;
             guest.DocumentNumber = txtDocumentNumber.Text.Trim();
 

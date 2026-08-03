@@ -23,19 +23,18 @@ namespace HotelManagement.WPF.Windows
         private List<ReservationExtraService> extraServices = new List<ReservationExtraService>();
 
 
-        // If no Reservation is passed when creating the window, automatically use null
+        // If no Reservation is passed when creating the window, use null
         public ReservationWindow(Reservation selectedReservation = null)
         {
             InitializeComponent();
 
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
             reservation = selectedReservation;
 
             if (reservation != null)
             {
                 // EDIT MODE
-                reservation = selectedReservation;
                 isEditMode = true;
 
                 txtTitle.Text = "Edit Reservation";
@@ -54,6 +53,9 @@ namespace HotelManagement.WPF.Windows
             Loaded += ReservationWindow_Loaded;
         }
 
+        /// <summary>
+        /// Load the form with the data of the reservation being edited
+        /// </summary>
         private void LoadReservationData()
         {
             cbGuests.SelectedValue = reservation.GuestId;
@@ -67,6 +69,11 @@ namespace HotelManagement.WPF.Windows
             txtNumberOfGuests.Text = reservation.NumberOfGuests.ToString();
         }
 
+        /// <summary>
+        /// Add a new reservation or update an existing one
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
             if (!GetReservationDataFromForm())
@@ -128,12 +135,20 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Close the window without saving changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        // Helper to build reservation object from the form
+        /// <summary>
+        /// Build a reservation object from the form data
+        /// </summary>
+        /// <returns>True if successful, false otherwise</returns>
         private bool GetReservationDataFromForm()
         {
             if (cbGuests.SelectedValue == null)
@@ -204,6 +219,11 @@ namespace HotelManagement.WPF.Windows
             return true;
         }
 
+        /// <summary>
+        /// Load guests, rooms, and extra services when the window is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void ReservationWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadGuests();
@@ -217,6 +237,10 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Populate the guest ComboBox with data from the API
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadGuests()
         {
             HttpResponseMessage response = await client.GetAsync("api/Guests");
@@ -227,11 +251,9 @@ namespace HotelManagement.WPF.Windows
 
                 cbGuests.ItemsSource = guests;
 
-                // what the user sees
-                cbGuests.DisplayMemberPath = "Name";
+                cbGuests.DisplayMemberPath = "Name";  // what the user sees
 
-                // what gets stored
-                cbGuests.SelectedValuePath = "GuestId";
+                cbGuests.SelectedValuePath = "GuestId";  // what gets stored
             }
             else
             {
@@ -239,6 +261,10 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Populate the room ComboBox with data from the API
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadRooms()
         {
             HttpResponseMessage response = await client.GetAsync("api/Rooms");
@@ -247,13 +273,12 @@ namespace HotelManagement.WPF.Windows
             {
                 rooms = await response.Content.ReadAsAsync<List<Room>>();
 
-                if (rooms == null)
+                if (!rooms.Any())
                 {
-                    MessageBox.Show("No rooms returned from API.");
-                    return;
+                    MessageBox.Show("No rooms available.");
                 }
 
-                // Filter unavailable rooms only when creating a reservation
+                // Filter unavailable rooms when creating a reservation
                 if (!isEditMode)
                 {
                     rooms = rooms
@@ -273,6 +298,10 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Populate the extra services ItemsControl with data from the API
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadExtraServices()
         {
             HttpResponseMessage response = await client.GetAsync("api/ExtraServices");
@@ -299,7 +328,9 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
-        // load extra services to form when editing existing reservation
+        /// <summary>
+        /// Load the selected extra services for the reservation being edited
+        /// </summary>
         private void LoadSelectedExtraServices()
         {
             if (reservation.ExtraServices == null)

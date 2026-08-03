@@ -2,6 +2,7 @@
 
 namespace HotelManagement.API
 {
+
     public class InvoiceViewModel
     {
         public int InvoiceId { get; set; }

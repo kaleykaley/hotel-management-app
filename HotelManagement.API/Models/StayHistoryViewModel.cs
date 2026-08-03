@@ -17,7 +17,5 @@ namespace HotelManagement.API
 
         public int Nights { get; set; }
 
-        // not needed - all checked-out
-        //public string Status { get; set; }
     }
 }

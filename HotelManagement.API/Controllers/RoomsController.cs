@@ -14,7 +14,7 @@ namespace HotelManagement.API.Controllers
                    ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
         /// <summary>
-        /// Returns a list of all active rooms in the database (not deleted)
+        /// Retrieves a list of all active rooms in the database
         /// </summary>
         /// <returns>List of Rooms</returns>
         // GET api/Rooms
@@ -28,7 +28,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Returns a specific Room by ID
+        /// Retrieves a specific Room by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Room or error message</returns>
@@ -36,7 +36,7 @@ namespace HotelManagement.API.Controllers
         public IHttpActionResult Get(int id)
         {
             // don't return "isDeleted" rooms, only active ones
-            Room room = dc.Rooms.FirstOrDefault(r =>r.RoomId == id && !r.IsDeleted);
+            Room room = dc.Rooms.FirstOrDefault(r => r.RoomId == id && !r.IsDeleted);
 
             if (room != null)
             {
@@ -82,7 +82,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Edits an existing Room in the database
+        /// Updates an existing Room in the database
         /// </summary>
         /// <param name="id"></param>
         /// <param name="editedRoom"></param>
@@ -171,7 +171,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Validates the Room object for required fields and constraints
+        /// Validates the Room object
         /// </summary>
         /// <param name="room"></param>
         /// <returns>Error message or null if valid</returns>

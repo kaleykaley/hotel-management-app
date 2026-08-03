@@ -25,7 +25,7 @@ namespace HotelManagement.WPF.Views
 
             // Base address of Web API
             // Every request will start with this URL
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
             // Load rooms automatically; runs after page finishes loading
             Loaded += GuestsPage_Loaded;

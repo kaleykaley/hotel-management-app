@@ -13,9 +13,11 @@ namespace HotelManagement.API.Controllers
         private readonly HotelDataDataContext dc = new HotelDataDataContext(
                 ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
-
-        // GET api/ReservationExtraServiceExtraServices
-        // retrieve entire list of categories
+        /// <summary>
+        /// Retrieves a list of all ReservationExtraService records
+        /// </summary>
+        /// <returns>List of ReservationExtraService records</returns>
+        // GET api/ReservationExtraServices
         public List<ReservationExtraService> Get()
         {
             // Returns the rows from table linking reservations to extra services + quantity
@@ -23,10 +25,16 @@ namespace HotelManagement.API.Controllers
             return listReservationExtraServiceExtraServices.ToList(); // convert back to list from object var
         }
 
-        // Need both IDs because the primary key is a composite key of ReservationId and ExtraServiceId
-        // GET api/ReservationExtraServiceExtraServices/5/2
+        /// <summary>
+        /// Retrieves a specific ReservationExtraService record based on the composite key of reservationId and extraServiceId
+        /// </summary>
+        /// <param name="reservationId"></param>
+        /// <param name="extraServiceId"></param>
+        /// <returns>Specific ReservationExtraService record</returns>
+        // GET api/ReservationExtraServices/5/2
         public IHttpActionResult Get(int reservationId, int extraServiceId)
         {
+            // Need both IDs because the primary key is a composite key of ReservationId and ExtraServiceId
             ReservationExtraService item = dc.ReservationExtraServices
                 .FirstOrDefault(r => r.ReservationId == reservationId && r.ExtraServiceId == extraServiceId);
 
@@ -38,8 +46,12 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Reservation extra service not found."));
         }
 
-        // POST api/ReservationExtraServiceExtraServices
-        // Insert a ReservationExtraService, returns ihttp result
+        /// <summary>
+        /// Inserts a new ReservationExtraService record into the database
+        /// </summary>
+        /// <param name="newReservationExtraService"></param>
+        /// <returns>HTTP response</returns>
+        // POST api/ReservationExtraServices
         public IHttpActionResult Post([FromBody] ReservationExtraService newReservationExtraService)
         {
             string error = ValidateReservationExtraService(newReservationExtraService);
@@ -60,12 +72,17 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
+
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-        // DELETE api/ReservationExtraServiceExtraServices/5
-        // Added a route so this method is called when URL contains a ReservationExtraServiceId
+        /// <summary>
+        /// Deletes a specific ReservationExtraService record based on the composite key of reservationId and extraServiceId
+        /// </summary>
+        /// <param name="reservationId"></param>
+        /// <param name="extraServiceId"></param>
+        /// <returns>HTTP response</returns>
+        // DELETE api/ReservationExtraServices/5/2
         [Route("api/ReservationExtraServices/{reservationId}/{extraServiceId}")]
         public IHttpActionResult Delete(int reservationId, int extraServiceId)
         {
@@ -84,33 +101,31 @@ namespace HotelManagement.API.Controllers
                 }
                 catch (Exception e)
                 {
-                    return ResponseMessage(
-                        Request.CreateResponse(
-                            HttpStatusCode.ServiceUnavailable,
+                    return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable,
                             e.Message));
                 }
 
-                return ResponseMessage(
-                    Request.CreateResponse(
-                        HttpStatusCode.OK,
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK,
                         "Extra service removed from reservation."));
             }
 
-            return ResponseMessage(
-                Request.CreateResponse(
-                    HttpStatusCode.NotFound,
+            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
                     "This extra service is not associated with this reservation."));
         }
 
         /// <summary>
-        /// Validates the ReservationExtraService object before inserting into the database
+        /// Validates the ReservationExtraService object
         /// </summary>
         /// <param name="item"></param>
-        /// <returns></returns>
+        /// <returns>Error message or null if valid</returns>
         private string ValidateReservationExtraService(ReservationExtraService item)
         {
-            var reservation = dc.Reservations
-                .FirstOrDefault(r => r.ReservationId == item.ReservationId);
+            if (item == null)
+            {
+                return "Reservation extra service data is required.";
+            }
+
+            var reservation = dc.Reservations.FirstOrDefault(r => r.ReservationId == item.ReservationId);
 
             if (reservation == null)
             {
@@ -130,8 +145,7 @@ namespace HotelManagement.API.Controllers
                 return "Quantity must be greater than zero.";
             }
 
-            var existing = dc.ReservationExtraServices
-                .FirstOrDefault(r => r.ReservationId == item.ReservationId && r.ExtraServiceId == item.ExtraServiceId);
+            var existing = dc.ReservationExtraServices.FirstOrDefault(r => r.ReservationId == item.ReservationId && r.ExtraServiceId == item.ExtraServiceId);
 
             if (existing != null)
             {

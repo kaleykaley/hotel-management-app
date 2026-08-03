@@ -1,18 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelManagement.WPF.Views;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using HotelManagement.WPF.Views;
 
 namespace HotelManagement.WPF
 {
@@ -24,35 +11,65 @@ namespace HotelManagement.WPF
         public MainWindow()
         {
             InitializeComponent();
-            // Navigate to the DashboardPage when the application starts
+            // Display the DashboardPage when the application starts
             MainFrame.Navigate(new DashboardPage());
         }
+
+        /// <summary>
+        /// Navigates to the DashboardPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new DashboardPage());
         }
 
+        /// <summary>
+        /// Navigates to the GuestsPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Guests_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new GuestsPage());
         }
 
+        /// <summary>
+        /// Navigates to the RoomsPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Rooms_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new RoomsPage());
         }
 
+        /// <summary>
+        /// Navigates to the ReservationsPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Reservations_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new ReservationsPage());
         }
 
-
+        /// <summary>
+        /// Navigates to the CheckInOutPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrontDesk_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new CheckInOutPage());
         }
 
+        /// <summary>
+        /// Navigates to the InvoicesPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Invoices_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new InvoicesPage());

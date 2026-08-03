@@ -15,38 +15,42 @@ namespace HotelManagement.WPF.Views
     /// </summary>
     public partial class RoomsPage : Page
     {
-        // HttpClient: to send requests to our Web API
-        // create one object and reuse it while this page is open.
         private HttpClient client = new HttpClient(); // bridge to API
 
-        // Stores all rooms received from API.
-        // Filter this list instead of requesting the API every time
+        // Stores all rooms received from API
         private List<Room> allRooms = new List<Room>();
         public RoomsPage()
         {
             InitializeComponent();
 
             // Base address of Web API
-            // Every request will start with this URL
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
-            // Load rooms automatically; runs after page finishes loading
+            // Load rooms automatically after page finishes loading
             Loaded += RoomsPage_Loaded;
         }
 
+        /// <summary>
+        /// Loads the rooms from the API when the page is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void RoomsPage_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadRooms();
         }
 
-        // implement filters through api?
+        /// <summary>
+        /// Filters and displays the rooms
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Search_Click(object sender, RoutedEventArgs e)
         {
-            /// FIX SEARCH 
             if (!ValidatePriceFilters(out decimal minPrice, out decimal maxPrice))
                 return;
 
-            // Start with all reservations
+            // Start with all rooms
             IEnumerable<Room> filtered = allRooms;
 
             // Filter by room type if one was selected
@@ -72,6 +76,11 @@ namespace HotelManagement.WPF.Views
             dgRooms.ItemsSource = filtered.ToList();
         }
 
+        /// <summary>
+        /// Resets the filters and displays all rooms
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             // Reset ComboBoxes
@@ -86,21 +95,27 @@ namespace HotelManagement.WPF.Views
             dgRooms.ItemsSource = allRooms;
         }
 
-        private async void AddRoom_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Opens a new RoomWindow to add a new room
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddRoom_Click(object sender, RoutedEventArgs e)
         {
-            // Create a new RoomWindow to add new room info
             RoomWindow window = new RoomWindow();
-
-            // Open the popup and wait until the user closes it
             window.Show();
 
-            window.Closed += RoomWindow_Closed; // when this window closes, run the RoomWindow_Closed method to reload rooms
+            // Reload list of rooms when window closes
+            window.Closed += RoomWindow_Closed;
         }
 
-        private async void Edit_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Opens a new RoomWindow to edit the selected room
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Edit_Click(object sender, RoutedEventArgs e)
         {
-            // as Room: "Try to convert this to a Room. If it works, give me the Room.
-            // If not, give me null."
             // Get the room selected by the user in the DataGrid
             Room selectedRoom = dgRooms.SelectedItem as Room;
 
@@ -110,28 +125,30 @@ namespace HotelManagement.WPF.Views
                 return;
             }
 
-            // Create a new RoomWindow; pass the selected room to edit
             RoomWindow window = new RoomWindow(selectedRoom);
-
-            // Open the popup and wait until the user closes it
             window.Show();
 
-            window.Closed += RoomWindow_Closed; // when this window closes, run the RoomWindow_Closed method to reload rooms
+            // Reload list of rooms when window closes
+            window.Closed += RoomWindow_Closed;
         }
 
-        // to refresh list of rooms after adding or editing a room
+        /// <summary>
+        /// Reloads the list of rooms when the RoomWindow is closed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void RoomWindow_Closed(object sender, EventArgs e)
         {
             await LoadRooms();
-
-            //RoomsPage_Loaded(null, null);
         }
 
-        // async because it must wait for the server (API) to respond
+        /// <summary>
+        /// Deletes the selected room
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
-            // as Room: "Try to convert this to a Room. If it works, give me the Room.
-            // If not, give me null."
             // Get the room selected
             Room selectedRoom = dgRooms.SelectedItem as Room;
 
@@ -151,7 +168,7 @@ namespace HotelManagement.WPF.Views
             {
                 return;
             }
-            //DELETE api/Rooms/{id}
+
             HttpResponseMessage response = await client.DeleteAsync($"api/Rooms/{selectedRoom.RoomId}");
 
             if (response.IsSuccessStatusCode)
@@ -160,7 +177,6 @@ namespace HotelManagement.WPF.Views
 
                 // Reload rooms from API
                 await LoadRooms();
-                //RoomsPage_Loaded(null, null);
             }
             else
             {
@@ -189,8 +205,12 @@ namespace HotelManagement.WPF.Views
             }
         }
 
-
-
+        /// <summary>
+        /// Validates the price filters
+        /// </summary>
+        /// <param name="minPrice"></param>
+        /// <param name="maxPrice"></param>
+        /// /// <returns>True if the filters are valid, otherwise false</returns>
         private bool ValidatePriceFilters(out decimal minPrice, out decimal maxPrice)
         {
             minPrice = 0;

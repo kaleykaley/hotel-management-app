@@ -13,14 +13,22 @@ namespace HotelManagement.API.Controllers
         private readonly HotelDataDataContext dc =
             new HotelDataDataContext(ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
+        /// <summary>
+        /// Retrieves the entire list of guests
+        /// </summary>
+        /// <returns></returns>
         // GET api/Guests
-        // retrieve entire list of categories
         public List<Guest> Get()
         {
             var lista = from Guest in dc.Guests select Guest;
             return lista.ToList(); // convert back to list from object var
         }
 
+        /// <summary>
+        /// Retrieves a specific guest by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
         // GET api/guests/5
         public IHttpActionResult Get(int id)
         {
@@ -28,14 +36,17 @@ namespace HotelManagement.API.Controllers
 
             if (guest != null)
             {
-                // response says the guest was found and here it is
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, guest));
             }
             // guest not found, sends 404 default
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Guest not found."));
         }
 
-
+        /// <summary>
+        /// Retrieves the stay history of a specific guest by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
         // GET api/Guests/5/StayHistory
         [Route("api/Guests/{id}/StayHistory")]
         public IHttpActionResult GetStayHistory(int id)
@@ -51,11 +62,9 @@ namespace HotelManagement.API.Controllers
             }
 
             // Get guest's completed reservations and combine them with room info
-            // "Go through Reservations table, and for each row, temporarily call that row reservation"
-            // Get the guest's completed reservations
             var history = from reservation in dc.Reservations
 
-                              // Only get this guest's past stays
+                         // Only get this guest's past stays
                           where reservation.GuestId == id
                           && reservation.ReservationStatus == "Checked_Out"
 
@@ -78,6 +87,10 @@ namespace HotelManagement.API.Controllers
             return Ok(history.ToList());
         }
 
+        /// <summary>
+        /// Retrieves all guests with active reservations
+        /// </summary>
+        /// <returns>HTTP response</returns>
         // GET api/Guests/ActiveReservations
         [Route("api/Guests/ActiveReservations")]
         public IHttpActionResult GetGuestsWithActiveReservations()
@@ -91,6 +104,10 @@ namespace HotelManagement.API.Controllers
             return Ok(guests.ToList());
         }
 
+        /// <summary>
+        /// Retrieves all guests with stay history 
+        /// </summary>
+        /// <returns>HTTP response</returns>
         // GET api/Guests/WithStayHistory
         [Route("api/Guests/WithStayHistory")]
         public IHttpActionResult GetGuestsWithStayHistory()
@@ -104,8 +121,12 @@ namespace HotelManagement.API.Controllers
             return Ok(guests.ToList());
         }
 
+        /// <summary>
+        /// Inserts a new guest into the database
+        /// </summary>
+        /// <param name="newGuest"></param>
+        /// <returns>HTTP response</returns>
         // POST api/guests
-        // Insert a guest, returns ihttp result
         public IHttpActionResult Post([FromBody] Guest newGuest)
         {
             string error = ValidateGuest(newGuest);
@@ -115,7 +136,7 @@ namespace HotelManagement.API.Controllers
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
 
-            // guest doesn't exist yet, so add it
+            // add new guest
             dc.Guests.InsertOnSubmit(newGuest);
 
             try
@@ -126,11 +147,15 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-        // PUT: like update from CRUD
+        /// <summary>
+        /// Updates an existing guest
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="editedGuest"></param>
+        /// <returns>HTTP response</returns>
         // PUT api/guests/5
         public IHttpActionResult Put(int id, [FromBody] Guest editedGuest)
         {
@@ -143,7 +168,7 @@ namespace HotelManagement.API.Controllers
 
             Guest existingGuest = dc.Guests.FirstOrDefault(g => g.GuestId == id);
 
-            if (existingGuest == null) // guest requested to change doesnt exist
+            if (existingGuest == null) // guest requested to update doesnt exist
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
                     "There is no guest with this ID to edit."));
@@ -164,23 +189,24 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
+
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
+        /// <summary>
+        /// Deletes a guest if they have no active reservations
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE api/guests/5
-        // Added a route so this method is called when URL contains a GuestId
-        //[Route("api/guests/{GuestId}")]
         public IHttpActionResult Delete(int id)
         {
             Guest guest = dc.Guests.FirstOrDefault(g => g.GuestId == id);
 
             if (guest != null) // guest requested to delete exists, so delete it
             {
-
                 // Check if guest has active reservations
-                var activeReservation = dc.Reservations
-                    .FirstOrDefault(r => r.GuestId == id &&
+                var activeReservation = dc.Reservations.FirstOrDefault(r => r.GuestId == id &&
                         (r.ReservationStatus == "Reserved" ||
                          r.ReservationStatus == "Checked_In"));
 
@@ -200,7 +226,7 @@ namespace HotelManagement.API.Controllers
                 {
                     return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
                 }
-                // if it arrives here, correu tudo bem
+
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
             }
             // guest requested to delete doesn't exist, so display error
@@ -208,7 +234,11 @@ namespace HotelManagement.API.Controllers
                 "There is no guest with this ID to delete."));
         }
 
-
+        /// <summary>
+        /// Validates the guest data
+        /// </summary>
+        /// <param name="guest"></param>
+        /// <returns>Error message or null if valid</returns>
         private string ValidateGuest(Guest guest)
         {
             if (guest == null)
@@ -231,7 +261,7 @@ namespace HotelManagement.API.Controllers
                 return "Email is required.";
             }
 
-            if (!guest.Email.Contains("@"))
+            if (!guest.Email.Contains("@") || !guest.Email.Contains("."))
             {
                 return "Invalid email format.";
             }

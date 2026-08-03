@@ -17,17 +17,28 @@ namespace HotelManagement.WPF.Windows
 
         private HttpClient client = new HttpClient(); // bridge to API
 
-        // check if selectedGuest null?
+        // The window requires a selected guest
         public StayHistoryWindow(Guest selectedGuest)
         {
             InitializeComponent();
-            client.BaseAddress = new Uri("https://localhost:44380/");
+
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
+
+            if (selectedGuest == null)
+            {
+                MessageBox.Show("No guest was selected.");
+                Close();
+                return;
+            }
+
             guest = selectedGuest;
 
             LoadStayHistory();
         }
 
-        // Load the stay history for the selected guest
+        /// <summary>
+        /// Loads the stay history of the selected guest
+        /// </summary>
         private async void LoadStayHistory()
         {
             txtGuestName.Text = guest.Name;
@@ -53,6 +64,11 @@ namespace HotelManagement.WPF.Windows
             }
         }
 
+        /// <summary>
+        /// Closes the window without saving any changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

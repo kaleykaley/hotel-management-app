@@ -23,15 +23,21 @@ namespace HotelManagement.WPF.Views
         private List<Guest> allGuests = new List<Guest>();
 
         private List<Room> allRooms = new List<Room>();
+
         public ReservationsPage()
         {
             InitializeComponent();
 
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
             Loaded += ReservationsPage_Loaded;
         }
 
+        /// <summary>
+        /// Load all reservations from the API when the page is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void ReservationsPage_Loaded(object sender, RoutedEventArgs e)
         {
             HttpResponseMessage response = await client.GetAsync("api/Reservations");
@@ -56,11 +62,13 @@ namespace HotelManagement.WPF.Views
             await LoadRooms();
         }
 
+        /// <summary>
+        /// Populate the guest ComboBox with all guests from the API
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadGuests()
         {
-            HttpResponseMessage response =
-                await client.GetAsync("api/Guests");
-
+            HttpResponseMessage response = await client.GetAsync("api/Guests");
 
             if (response.IsSuccessStatusCode)
             {
@@ -79,11 +87,13 @@ namespace HotelManagement.WPF.Views
             }
         }
 
+        /// <summary>
+        /// Populate the room ComboBox with all rooms from the API
+        /// </summary>
+        /// <returns>Task</returns>
         private async Task LoadRooms()
         {
-            HttpResponseMessage response =
-                await client.GetAsync("api/Rooms");
-
+            HttpResponseMessage response = await client.GetAsync("api/Rooms");
 
             if (response.IsSuccessStatusCode)
             {
@@ -101,6 +111,11 @@ namespace HotelManagement.WPF.Views
             }
         }
 
+        /// <summary>
+        /// Clear all search filters and display the complete list of reservations
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             cbGuests.SelectedIndex = -1;
@@ -110,6 +125,11 @@ namespace HotelManagement.WPF.Views
             dgReservations.ItemsSource = allReservations;
         }
 
+        /// <summary>
+        /// Filter the reservations
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Search_Click(object sender, RoutedEventArgs e)
         {
             // Validate date range
@@ -164,21 +184,30 @@ namespace HotelManagement.WPF.Views
             dgReservations.ItemsSource = filtered.ToList();
         }
 
-        private async void AddReservation_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Open a new ReservationWindow to add a new reservation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddReservation_Click(object sender, RoutedEventArgs e)
         {
-            // Create a new RoomWindow to add new room info
+            // Create a new ReservationWindow to add a reservation
             ReservationWindow window = new ReservationWindow();
 
-            // Open the popup and wait until the user closes it
             window.Show();
 
-            window.Closed += ReservationWindow_Closed; // when this window closes, run RservationWindow_Closed method to reload rooms
+            // Reload the reservations when the window is closed
+            window.Closed += ReservationWindow_Closed;
         }
 
-        private async void Edit_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Open a new ReservationWindow to edit the selected reservation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Edit_Click(object sender, RoutedEventArgs e)
         {
-            // as Reservation: "Try to convert this to a Reservation. If it works, give me the Reservation.
-            // If not, give me null."
+            // as Reservation: convert this to a Reservation object, or null if it cannot be converted
             // Get the reservation selected by the user in the DataGrid
             Reservation selectedReservation = dgReservations.SelectedItem as Reservation;
 
@@ -198,11 +227,12 @@ namespace HotelManagement.WPF.Views
 
             window.Show();
 
-            window.Closed += ReservationWindow_Closed; // when this window closes, run the ReservationWindow_Closed method to reload reservations
+            // Reload the reservations when the window is closed
+            window.Closed += ReservationWindow_Closed;
         }
 
         /// <summary>
-        /// Cancel a reservation - only if it has not started yet (check-in date is in the future)
+        /// Cancel a reservation 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -251,7 +281,11 @@ namespace HotelManagement.WPF.Views
             }
         }
 
-        // to refresh list of rooms after adding or editing a room
+        /// <summary>
+        /// Reload the reservations when the ReservationWindow is closed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReservationWindow_Closed(object sender, EventArgs e)
         {
             ReservationsPage_Loaded(null, null);

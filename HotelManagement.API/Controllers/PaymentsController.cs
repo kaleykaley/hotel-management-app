@@ -12,14 +12,22 @@ namespace HotelManagement.API.Controllers
     {
         private readonly HotelDataDataContext dc = new HotelDataDataContext(ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
+        /// <summary>
+        /// Retrieves the entire list of payments
+        /// </summary>
+        /// <returns>List of Payments</returns>
         // GET api/Payments
-        // retrieve entire list of payments
         public List<Payment> Get()
         {
             var listPayments = from Payment in dc.Payments select Payment;
             return listPayments.ToList(); // convert back to list from object var
         }
 
+        /// <summary>
+        /// Retrieves a specific payment by its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
         // GET api/Payments/5
         public IHttpActionResult Get(int id)
         {
@@ -34,8 +42,12 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Payment not found."));
         }
 
+        /// <summary>
+        /// Inserts a new payment and associates it with an invoice
+        /// </summary>
+        /// <param name="newPayment"></param>
+        /// <returns>HTTP response</returns>
         // POST api/Payments
-        // Insert a Payment, returns ihttp result
         public IHttpActionResult Post([FromBody] Payment newPayment)
         {
             string error = ValidatePayment(newPayment);
@@ -66,7 +78,7 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, everything ran well
+
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
@@ -74,7 +86,7 @@ namespace HotelManagement.API.Controllers
         /// Calculates the total amount due for an invoice: room charges + extra services
         /// </summary>
         /// <param name="invoice"></param>
-        /// <returns></returns>
+        /// <returns>Total amount due</returns>
         private decimal CalculateInvoiceTotal(Invoice invoice)
         {
             decimal total = 0;
@@ -101,10 +113,10 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Validates the payment data before inserting it into the database
+        /// Validates the payment data
         /// </summary>
         /// <param name="payment"></param>
-        /// <returns></returns>
+        /// <returns>Error message or null if valid</returns>
         private string ValidatePayment(Payment payment)
         {
             if (payment == null)
@@ -140,8 +152,7 @@ namespace HotelManagement.API.Controllers
                 return "Payment must cover the full invoice amount.";
             }
 
-            var existingPayment = dc.Payments
-                .FirstOrDefault(p => p.InvoiceId == payment.InvoiceId);
+            var existingPayment = dc.Payments.FirstOrDefault(p => p.InvoiceId == payment.InvoiceId);
 
             if (existingPayment != null)
             {

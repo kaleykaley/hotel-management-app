@@ -8,10 +8,9 @@ namespace HotelManagement.WPF.Data.Entities
 {
     public class Payment
     {
-        public int PaymentId { get; set; }
+        public int PaymentId { get; set; } 
 
-        // Cash, Credit_Card, Debit_Card
-        public string PaymentType { get; set; }
+        public string PaymentType { get; set; }   // Cash, Credit_Card, Debit_Card
 
         public decimal AmountPaid { get; set; }
 

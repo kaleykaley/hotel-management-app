@@ -1,7 +1,6 @@
 ﻿namespace HotelManagement.WPF.Data.Entities
 {
-    // Additional Services Management
-    // Possibility to add extra services to reservations (breakfast, spa access, room service, parking)
+    // Extra services: breakfast, spa access, room service, parking
     public class ExtraService
     {
         public int ExtraServiceId { get; set; }

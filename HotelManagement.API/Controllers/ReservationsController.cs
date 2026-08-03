@@ -14,9 +14,9 @@ namespace HotelManagement.API.Controllers
 
 
         /// <summary>
-        /// Retrieve all reservations, including extra services
+        /// Retrieves all reservations, including extra services
         /// </summary>
-        /// <returns>list of ReservationViewModel</returns>
+        /// <returns>List of ReservationViewModel</returns>
         // GET api/Reservations
         public IHttpActionResult Get()
         {
@@ -142,7 +142,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Insert a new reservation into the database
+        /// Inserts a new reservation into the database
         /// </summary>
         /// <param name="model"></param>
         /// <returns>HTTP response</returns>
@@ -190,7 +190,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Update an existing reservation by ID. Replace all existing extra services with the new list provided in the model.
+        /// /// Updates an existing reservation and replaces its extra services
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
@@ -253,7 +253,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Check in a reservation by ID. A reservation can only be checked in if it is currently reserved and the check-in date is today or earlier
+        /// Check in a reservation by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns>HTTP response</returns>
@@ -270,6 +270,7 @@ namespace HotelManagement.API.Controllers
                     "There is no Reservation with this ID."));
             }
 
+            // Can only check in if the reservation is currently reserved
             if (reservation.ReservationStatus != "Reserved")
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest,
@@ -299,7 +300,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Check out a reservation by ID. A reservation can only be checked out if it is currently checked in
+        /// Check out a reservation by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns>HTTP response</returns>
@@ -316,6 +317,7 @@ namespace HotelManagement.API.Controllers
                     "There is no Reservation with this ID."));
             }
 
+            // Can only check out if the reservation is currently checked in
             if (reservation.ReservationStatus != "Checked_In")
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest,
@@ -338,7 +340,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Cancel a reservation by ID. A reservation can only be cancelled if it has not yet checked in and the check-in date is in the future
+        /// Cancel a reservation by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns>HTTP response</returns>
@@ -388,7 +390,7 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Validates a reservation model before inserting or updating it in the database
+        /// Validates a reservation
         /// </summary>
         /// <param name="reservation"></param>
         /// <returns>error message if invalid, or null if valid.</returns>

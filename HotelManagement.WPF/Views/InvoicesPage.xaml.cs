@@ -24,11 +24,16 @@ namespace HotelManagement.WPF.Views
         {
             InitializeComponent();
 
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
             Loaded += InvoicesPage_Loaded;
         }
 
+        /// <summary>
+        /// Loads the list of invoices from the API when the page is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void InvoicesPage_Loaded(object sender, RoutedEventArgs e)
         {
             HttpResponseMessage response = await client.GetAsync("api/Invoices");
@@ -41,7 +46,7 @@ namespace HotelManagement.WPF.Views
                 // Save complete original list received from the API
                 allInvoices = invoices;
 
-                // Display all invoices initially in the DataGrid
+                // Display all invoices in the DataGrid
                 dgInvoices.ItemsSource = allInvoices;
             }
             else
@@ -50,6 +55,11 @@ namespace HotelManagement.WPF.Views
             }
         }
 
+        /// <summary>
+        /// Opens a new InvoiceWindow
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GenerateInvoice_Click(object sender, RoutedEventArgs e)
         {
             // Create a new InvoiceWindow to add new room info
@@ -58,10 +68,15 @@ namespace HotelManagement.WPF.Views
             // Open the popup and wait until the user closes it
             window.Show();
 
-            window.Closed += InvoiceWindow_Closed; // when this window closes, run RservationWindow_Closed method to reload rooms
-
+            // reload invoices when the window closes
+            window.Closed += RefreshInvoices; 
         }
 
+        /// <summary>
+        /// Opens a new PaymentWindow with the selected invoice
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RegisterPayment_Click(object sender, RoutedEventArgs e)
         {
             // as Invoice: "Try to convert this to an Invoice. If it works, give me the Invoice.
@@ -86,12 +101,14 @@ namespace HotelManagement.WPF.Views
 
             window.Show();
 
-            window.Closed += InvoiceWindow_Closed; // when this window closes, run the InvoiceWindow_Closed method to reload invoices
+            // reload invoices when the window closes
+            window.Closed += RefreshInvoices; 
         }
 
-
-        // to refresh list of rooms after adding or editing a room
-        private void InvoiceWindow_Closed(object sender, EventArgs e)
+        /// <summary>
+        /// Reloads invoices after a related window is closed
+        /// </summary>
+        private void RefreshInvoices(object sender, EventArgs e)
         {
             InvoicesPage_Loaded(null, null);
         }

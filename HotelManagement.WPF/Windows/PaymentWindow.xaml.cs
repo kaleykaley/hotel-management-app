@@ -12,18 +12,16 @@ namespace HotelManagement.WPF.Windows
     /// </summary>
     public partial class PaymentWindow : Window
     {
-        //private Reservation reservation;
         private Invoice invoice;
 
         private HttpClient client = new HttpClient(); // bridge to API
 
-
-        // If no Invoice is passed when creating the window, automatically use null
+        // If no Invoice is passed when creating the window, use null
         public PaymentWindow(Invoice selectedInvoice = null)
         {
             InitializeComponent();
 
-            client.BaseAddress = new Uri("https://localhost:44380/");
+            client.BaseAddress = new Uri("http://hotelmanagement2026.somee.com/");
 
             invoice = selectedInvoice;
 
@@ -55,6 +53,11 @@ namespace HotelManagement.WPF.Windows
             cbPaymentMethod.SelectedIndex = 0; // default to Cash
         }
 
+        /// <summary>
+        /// Create a Payment object and send it to the API
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void RegisterPayment_Click(object sender, RoutedEventArgs e)
         {
             if (cbPaymentMethod.SelectedItem == null)
@@ -80,13 +83,13 @@ namespace HotelManagement.WPF.Windows
             if (response.IsSuccessStatusCode)
             {
                 MessageBox.Show("Payment registered and invoice marked as Paid.");
+                this.Close();
             }
             else
             {
                 string error = await response.Content.ReadAsStringAsync();
                 MessageBox.Show(error);
             }
-            this.Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -94,7 +97,10 @@ namespace HotelManagement.WPF.Windows
             this.Close();
         }
 
-        // Helper to build payment object from the form
+        /// <summary>
+        /// Builds a Payment object from the form data
+        /// </summary>
+        /// <returns>Payment</returns>
         private Payment GetPaymentFromForm()
         {
             return new Payment
@@ -102,7 +108,7 @@ namespace HotelManagement.WPF.Windows
                 InvoiceId = invoice.InvoiceId,
                 AmountPaid = invoice.TotalDue,
                 PaymentType = cbPaymentMethod.Text,
-                // ?? - If the value on the left is not null, use it. else, use value on the right
+                // Use selected payment date, or today's date if none was selected
                 PaymentDate = dpPaymentDate.SelectedDate ?? DateTime.Today
             };
         }

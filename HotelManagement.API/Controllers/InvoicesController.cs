@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -12,6 +11,10 @@ namespace HotelManagement.API.Controllers
     {
         private readonly HotelDataDataContext dc = new HotelDataDataContext(ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
+        /// <summary>
+        /// Retrieves a list of all invoices
+        /// </summary>
+        /// <returns>HTTP response</returns>
         // GET api/Invoices
         public IHttpActionResult Get()
         {
@@ -37,8 +40,14 @@ namespace HotelManagement.API.Controllers
 
             return Ok(invoices);
         }
-         public IHttpActionResult Get(int id)
-         {
+
+        /// <summary>
+        /// Retrieves a specific invoice by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>HTTP response</returns>
+        public IHttpActionResult Get(int id)
+        {
             InvoiceViewModel invoice = dc.Invoices
                 .Where(i => i.InvoiceId == id)
                 .Select(i => new InvoiceViewModel
@@ -60,17 +69,20 @@ namespace HotelManagement.API.Controllers
                 })
                 .FirstOrDefault();
             if (invoice != null)
-             {
-                 // response says the Invoice was found and here it is
-                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, invoice));
-             }
-             // Invoice not found, sends 404 default
-             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found."));
-         }
+            {
+                // response says the Invoice was found and here it is
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, invoice));
+            }
+            // Invoice not found, sends 404 default
+            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found."));
+        }
 
-
+        /// <summary>
+        /// Inserts a new invoice into the database
+        /// </summary>
+        /// <param name="newInvoice"></param>
+        /// <returns>HTTP response</returns>
         // POST api/Invoices
-        // Insert a Invoice, returns ihttp result
         public IHttpActionResult Post([FromBody] Invoice newInvoice)
         {
             string error = ValidateInvoice(newInvoice);
@@ -79,8 +91,6 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
-
-            // Invoice doesn't exist yet, so add it
             dc.Invoices.InsertOnSubmit(newInvoice);
 
             try
@@ -91,12 +101,15 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-        // PUT: like update from CRUD
-        // only allow editing the Invoice Status
+        /// <summary>
+        /// Updates an existing invoice by ID. Only the InvoiceStatus can be updated.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="editedInvoice"></param>
+        /// <returns>HTTP response</returns>
         // PUT api/Invoices/5
         public IHttpActionResult Put(int id, [FromBody] Invoice editedInvoice)
         {
@@ -109,7 +122,7 @@ namespace HotelManagement.API.Controllers
 
             Invoice existingInvoice = dc.Invoices.FirstOrDefault(i => i.InvoiceId == id);
 
-            if (existingInvoice == null) // Invoice requested to change doesnt exist
+            if (existingInvoice == null) // Requested invoice not found
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
                     "There is no Invoice with this ID to edit."));
@@ -125,7 +138,7 @@ namespace HotelManagement.API.Controllers
             {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
             }
-            // if it arrives here, correu tudo bem
+
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
@@ -134,7 +147,7 @@ namespace HotelManagement.API.Controllers
         /// Calculates the total amount due for an invoice: room charges + extra services
         /// </summary>
         /// <param name="invoice"></param>
-        /// <returns></returns>
+        /// <returns>Total amount due</returns>
         private decimal CalculateInvoiceTotal(Invoice invoice)
         {
             decimal total = 0;
@@ -142,6 +155,7 @@ namespace HotelManagement.API.Controllers
             var reservation = dc.Reservations
                 .FirstOrDefault(r => r.ReservationId == invoice.ReservationId);
 
+            // Calculate room charges
             if (reservation != null)
             {
                 int nights = (reservation.CheckOutDate - reservation.CheckInDate).Days;
@@ -149,6 +163,7 @@ namespace HotelManagement.API.Controllers
                 total += nights * dc.Rooms.First(r => r.RoomId == reservation.RoomId).PricePerNight;
             }
 
+            // Add charges for extra services
             var extras = dc.ReservationExtraServices
                 .Where(x => x.ReservationId == invoice.ReservationId)
                 .ToList();
@@ -162,10 +177,10 @@ namespace HotelManagement.API.Controllers
         }
 
         /// <summary>
-        /// Validates the invoice data before inserting or updating it in the database
+        /// Validates the invoice data
         /// </summary>
         /// <param name="invoice"></param>
-        /// <returns></returns>
+        /// <returns>Error message or null if valid</returns>
         private string ValidateInvoice(Invoice invoice)
         {
             if (invoice == null)
@@ -182,9 +197,10 @@ namespace HotelManagement.API.Controllers
                 return "There is no reservation with this ID.";
             }
 
-            // Check reservation does not already have an invoice
-            var existingInvoice = dc.Invoices
-                .FirstOrDefault(i => i.ReservationId == invoice.ReservationId);
+            // Check reservation does not already have an invoice; ignore the current invoice if updating
+            var existingInvoice = dc.Invoices.FirstOrDefault(i =>
+                i.ReservationId == invoice.ReservationId &&
+                i.InvoiceId != invoice.InvoiceId);
 
             if (existingInvoice != null)
             {
@@ -192,8 +208,7 @@ namespace HotelManagement.API.Controllers
             }
 
             // Check invoice status
-            if (invoice.InvoiceStatus != "Paid" &&
-                invoice.InvoiceStatus != "Unpaid")
+            if (invoice.InvoiceStatus != "Paid" && invoice.InvoiceStatus != "Unpaid")
             {
                 return "Invalid invoice status.";
             }
