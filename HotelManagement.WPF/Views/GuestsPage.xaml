@@ -142,9 +142,10 @@
             SelectionUnit="FullRow"      
             AutoGenerateColumns="False"
             Background="White"
-            BorderThickness="0"
             FontSize="14"
             RowHeight="40"
+            BorderThickness="0"
+            RowHeaderWidth="0"
             HeadersVisibility="Column">
 
             <DataGrid.CellStyle>
@@ -167,7 +168,7 @@
                 <DataGridTextColumn
                     Header="Guest ID"
                     Binding="{Binding GuestId}"
-                    Width="*"/>
+                    Width="Auto"/>
 
 
                 <DataGridTextColumn

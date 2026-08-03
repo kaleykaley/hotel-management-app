@@ -10,9 +10,7 @@ namespace HotelManagement.API.Controllers
 {
     public class PaymentsController : ApiController
     {
-        private readonly HotelDataDataContext dc =
-            new HotelDataDataContext(
-                ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
+        private readonly HotelDataDataContext dc = new HotelDataDataContext(ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
         // GET api/Payments
         // retrieve entire list of payments
@@ -35,7 +33,6 @@ namespace HotelManagement.API.Controllers
             // Payment not found, sends 404 default
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Payment not found."));
         }
-
 
         // POST api/Payments
         // Insert a Payment, returns ihttp result
@@ -73,71 +70,11 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-        // PUT: like update from CRUD
-
-        // allow edits to payments??
-        // PUT api/Payments/5
-        public IHttpActionResult Put(int id, [FromBody] Payment editedPayment)
-        {
-            string error = ValidatePayment(editedPayment);
-
-            if (error != null)
-            {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest,error));
-            }
-
-            Payment existingPayment = dc.Payments.FirstOrDefault(g => g.PaymentId == id);
-
-            if (existingPayment == null) // Payment requested to change doesnt exist
-            {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
-                    "There is no Payment with this ID to edit."));
-            }
-            // Payment found, so update it
-            existingPayment.PaymentDate = editedPayment.PaymentDate;
-            existingPayment.PaymentType = editedPayment.PaymentType;
-
-
-            try
-            {
-                dc.SubmitChanges();
-            }
-            catch (Exception e)
-            {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
-            }
-            // if it arrives here, correu tudo bem
-            return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
-        }
-
-        // DELETE api/Payments/5
-        // Added a route so this method is called when URL contains a PaymentId
-        //[Route("api/Payments/{PaymentId}")]
-        public IHttpActionResult Delete(int id)
-        {
-            Payment payment = dc.Payments.FirstOrDefault(p => p.PaymentId == id);
-
-            if (payment != null) // Payment requested to delete exists, so delete it
-            {
-                dc.Payments.DeleteOnSubmit(payment);
-
-                try
-                {
-                    dc.SubmitChanges(); // commit updates to db
-                }
-                catch (Exception e)
-                {
-                    return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
-                }
-                // if it arrives here, correu tudo bem
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
-            }
-            // Payment requested to delete doesn't exist, so display error
-            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
-                "There is no Payment with this ID to delete."));
-        }
-
-        // move to helper class? 
+        /// <summary>
+        /// Calculates the total amount due for an invoice: room charges + extra services
+        /// </summary>
+        /// <param name="invoice"></param>
+        /// <returns></returns>
         private decimal CalculateInvoiceTotal(Invoice invoice)
         {
             decimal total = 0;
@@ -163,8 +100,18 @@ namespace HotelManagement.API.Controllers
             return total;
         }
 
+        /// <summary>
+        /// Validates the payment data before inserting it into the database
+        /// </summary>
+        /// <param name="payment"></param>
+        /// <returns></returns>
         private string ValidatePayment(Payment payment)
         {
+            if (payment == null)
+            {
+                return "Payment data is required.";
+            }
+
             var invoice = dc.Invoices
                 .FirstOrDefault(i => i.InvoiceId == payment.InvoiceId);
 
@@ -187,6 +134,7 @@ namespace HotelManagement.API.Controllers
 
             decimal invoiceTotal = CalculateInvoiceTotal(invoice);
 
+            // Check if the payment amount matches the invoice total (allowing for a small rounding error)
             if (Math.Abs(payment.AmountPaid - invoiceTotal) > 0.01m)
             {
                 return "Payment must cover the full invoice amount.";

@@ -138,7 +138,7 @@
                 <DataGridTextColumn
                     Header="Invoice ID"
                     Binding="{Binding InvoiceId}"
-                    Width="*"/>
+                    Width="Auto"/>
 
                 <DataGridTextColumn
                     Header="Guest Name"

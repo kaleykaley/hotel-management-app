@@ -138,7 +138,7 @@
                 <DataGridTextColumn
                     Header="Reservation ID"
                     Binding="{Binding ReservationId}"
-                    Width="*"/>
+                    Width="Auto"/>
 
                 <DataGridTextColumn
                     Header="Guest Name"

@@ -115,13 +115,6 @@ namespace HotelManagement.API.Controllers
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.BadRequest, error));
             }
 
-            Guest existingGuest = dc.Guests.FirstOrDefault(g => g.GuestId == newGuest.GuestId);
-
-            if (existingGuest != null) // guest already exists (w/ id), so cant add it
-            {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.Conflict,
-                    "There is already a registered guest with this ID."));
-            }
             // guest doesn't exist yet, so add it
             dc.Guests.InsertOnSubmit(newGuest);
 
@@ -236,6 +229,11 @@ namespace HotelManagement.API.Controllers
             if (string.IsNullOrEmpty(guest.Email))
             {
                 return "Email is required.";
+            }
+
+            if (!guest.Email.Contains("@"))
+            {
+                return "Invalid email format.";
             }
 
             if (string.IsNullOrEmpty(guest.DocumentType))

@@ -119,13 +119,9 @@
                            FontSize="14"
                            Margin="10,5"/>
 
-
             </Grid>
 
-
         </Border>
-
-
 
         <!-- STAY HISTORY TABLE -->
         <DataGrid x:Name="dgStayHistory"
@@ -166,7 +162,7 @@
 
                 <DataGridTextColumn Header="Reservation ID"
                                     Binding="{Binding ReservationId}"
-                                    Width="*"/>
+                                    Width="Auto"/>
 
 
                 <DataGridTextColumn Header="Room #"

@@ -10,15 +10,9 @@ namespace HotelManagement.API.Controllers
 {
     public class InvoicesController : ApiController
     {
-        private readonly HotelDataDataContext dc =
-            new HotelDataDataContext(
-                ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
+        private readonly HotelDataDataContext dc = new HotelDataDataContext(ConfigurationManager.ConnectionStrings["HotelManagementConnectionString"].ConnectionString);
 
         // GET api/Invoices
-        /*public IHttpActionResult Get()
-        {
-            return Ok(dc.Invoices.ToList());
-        }*/
         public IHttpActionResult Get()
         {
             var invoices = dc.Invoices
@@ -43,23 +37,6 @@ namespace HotelManagement.API.Controllers
 
             return Ok(invoices);
         }
-
-
-
-        // GET api/Invoices/5
-        /* public IHttpActionResult Get(int id)
-         {
-             Invoice invoice = dc.Invoices.FirstOrDefault(p => p.InvoiceId == id);
-
-             if (invoice != null)
-             {
-                 // response says the Invoice was found and here it is
-                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, Invoice));
-             }
-             // Invoice not found, sends 404 default
-             return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Invoice not found."));
-         }*/
-        // GET api/Invoices/5
          public IHttpActionResult Get(int id)
          {
             InvoiceViewModel invoice = dc.Invoices
@@ -119,8 +96,7 @@ namespace HotelManagement.API.Controllers
         }
 
         // PUT: like update from CRUD
-
-        // allow edits to Invoices??
+        // only allow editing the Invoice Status
         // PUT api/Invoices/5
         public IHttpActionResult Put(int id, [FromBody] Invoice editedInvoice)
         {
@@ -153,34 +129,12 @@ namespace HotelManagement.API.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
         }
 
-        // DELETE api/Invoices/5
-        // Added a route so this method is called when URL contains a InvoiceId
-        //[Route("api/Invoices/{InvoiceId}")]
-        public IHttpActionResult Delete(int id)
-        {
-            Invoice invoice = dc.Invoices.FirstOrDefault(i => i.InvoiceId == id);
 
-            if (invoice != null) // Invoice requested to delete exists, so delete it
-            {
-                dc.Invoices.DeleteOnSubmit(invoice);
-
-                try
-                {
-                    dc.SubmitChanges(); // commit updates to db
-                }
-                catch (Exception e)
-                {
-                    return ResponseMessage(Request.CreateResponse(HttpStatusCode.ServiceUnavailable, e));
-                }
-                // if it arrives here, correu tudo bem
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK));
-            }
-            // Invoice requested to delete doesn't exist, so display error
-            return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound,
-                "There is no Invoice with this ID to delete."));
-        }
-
-        // move to helper class? need only in paymentscontroler?
+        /// <summary>
+        /// Calculates the total amount due for an invoice: room charges + extra services
+        /// </summary>
+        /// <param name="invoice"></param>
+        /// <returns></returns>
         private decimal CalculateInvoiceTotal(Invoice invoice)
         {
             decimal total = 0;
@@ -207,8 +161,18 @@ namespace HotelManagement.API.Controllers
             return total;
         }
 
+        /// <summary>
+        /// Validates the invoice data before inserting or updating it in the database
+        /// </summary>
+        /// <param name="invoice"></param>
+        /// <returns></returns>
         private string ValidateInvoice(Invoice invoice)
         {
+            if (invoice == null)
+            {
+                return "Invoice data is required.";
+            }
+
             // Check reservation exists
             var reservation = dc.Reservations
                 .FirstOrDefault(r => r.ReservationId == invoice.ReservationId);

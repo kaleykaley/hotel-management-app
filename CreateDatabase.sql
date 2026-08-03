@@ -24,7 +24,7 @@ CREATE TABLE Rooms(
 	RoomType NVARCHAR(30) NOT NULL,
 	Capacity INT NOT NULL,
 	PricePerNight DECIMAL(10,2) NOT NULL,
-	-- enum: Available, Occupied, Under_Maintenance, Reserved
+	-- enum: Available, Occupied, Maintenance, Reserved
 	RoomStatus NVARCHAR(30) NOT NULL
 );
 
